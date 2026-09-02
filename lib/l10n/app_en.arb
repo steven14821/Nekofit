@@ -1,0 +1,806 @@
+{
+  "@@locale": "en",
+  "@@last_modified": "2026-08-30",
+
+  "appTitle": "NekoFit",
+  "tagline": "Your personal konbini",
+  "retry": "Retry",
+  "authGateErrorTitle": "We couldn't load your profile",
+  "authGateErrorBody": "Check your connection and try again.",
+
+  "navHome": "Home",
+  "navPantry": "Pantry",
+  "navDiary": "Diary",
+  "navPet": "Pet",
+  "navProfile": "Profile",
+
+  "loginWelcome": "Welcome back!",
+  "loginWelcomeSub": "Your streak and Mochi are waiting.",
+  "loginEmailLabel": "EMAIL",
+  "loginPasswordLabel": "PASSWORD",
+  "loginForgotPassword": "Forgot your password?",
+  "loginSignIn": "SIGN IN",
+  "loginOrContinueWith": "OR CONTINUE WITH",
+  "loginContinueGoogle": "Continue with Google",
+  "loginEmailErrorEmpty": "Please enter your email",
+  "loginEmailErrorInvalid": "Please enter a valid email",
+  "loginPasswordErrorEmpty": "Please enter your password",
+  "loginNoAccount": "Don't have an account? ",
+  "loginRegister": "Sign up here",
+  "loginGoogleFailed": "Couldn't sign in with Google. Check your connection and try again.",
+  "forgotTitle": "Recover Password",
+  "forgotBody": "Enter your registered email and we'll send you a link to reset your password.",
+  "emailLabel": "Email",
+  "emailEmpty": "Enter your email",
+  "emailInvalid": "Enter a valid email",
+  "cancel": "Cancel",
+  "send": "Send",
+  "resetEmailSent": "Recovery link sent successfully.",
+  "errorPrefix": "Error: {error}",
+
+  "onboardingSkip": "SKIP",
+  "onboardingTitle": "What will you gain?",
+  "onboardingSubtitle": "3 things NekoFit does for you",
+  "onboardingSlide1Title": "Log your pantry\nin 10 seconds",
+  "onboardingSlide1Subtitle": "Scan or write in your products and NekoFit tracks the inventory for you. You'll know what's running low before it runs out.",
+  "onboardingSlide2Title": "AI identifies what\nyou eat from a photo",
+  "onboardingSlide2Subtitle": "Snap a picture of your plate and AI calculates calories, protein, carbs and fat instantly. No scales or tables needed.",
+  "onboardingSlide3Title": "Your pet keeps\nyou consistent",
+  "onboardingSlide3Subtitle": "Every logged meal feeds your pet. Level up, unlock outfits and keep your streak: theirs depends on yours.",
+  "start": "START",
+  "next": "NEXT",
+
+  "stepEssential": "Essentials",
+  "stepPersonalize": "Customize",
+  "stepExtreme": "Extreme",
+  "essentialsTitle": "Start in 30 seconds",
+  "essentialsBody": "Your gender, age, height and weight are enough to estimate your calorie goal instantly. You can fine-tune the rest later.",
+  "genderFemale": "Female",
+  "genderMale": "Male",
+  "ageField": "Age (years)",
+  "heightField": "Height (cm)",
+  "weightField": "Current weight (kg)",
+  "goalQuestion": "What's your goal?",
+  "customGoalLabel": "Describe your specific goal",
+  "customGoalHint": "e.g. Build endurance for a 10km marathon",
+  "goalLoseWeight": "Lose weight",
+  "goalLoseWeightDesc": "Moderate calorie deficit, prioritizing protein to preserve muscle.",
+  "goalMaintainWeight": "Maintain weight",
+  "goalMaintainWeightDesc": "Energy balance to sustain weight and body recomposition.",
+  "goalGainMuscle": "Gain muscle",
+  "goalGainMuscleDesc": "Controlled surplus + high protein for hypertrophy.",
+  "goalCustom": "Other/Custom",
+  "goalCustomDesc": "If you're chasing specific athletic or clinical goals.",
+  "recommendedDailyCalories": "Recommended daily calories",
+  "bmrFormula": "BMR formula: {formula}",
+  "bmrFormulaKatch": "Katch-McArdle",
+  "bmrFormulaMifflin": "Mifflin-St Jeor",
+  "macroCarbs": "Carbs",
+  "macroProteins": "Protein",
+  "macroFats": "Fats",
+  "personalizeTitle": "Customize your plan",
+  "personalizeBody": "Optional: refine your estimate with body fat, daily activity and your pet.",
+  "bodyFatSection": "Body fat %",
+  "bodyFatSectionHint": "Enables the Katch-McArdle formula, much more accurate than standard ones.",
+  "lifestyleSection": "Daily lifestyle",
+  "lifestyleSectionHint": "What do you do most of the day, not counting training?",
+  "trainingSection": "Training burn",
+  "trainingSectionHint": "We add fixed kcal based on activity type and minutes per week.",
+  "petSection": "Meet your pet",
+  "petSectionHint": "Give a name to your virtual nutrition and cooking buddy.",
+  "methodVisualTitle": "Visual method",
+  "methodVisualDesc": "Pick your range using pictures and descriptions.",
+  "methodNavyTitle": "US Navy method",
+  "methodNavyDesc": "Real calculation with measuring tape (neck, waist, hips).",
+  "myBodyFatEstimated": "Your estimated body fat",
+  "navyHintMale": "Your waist must be bigger than your neck.",
+  "navyHintFemale": "Complete neck, waist, hips and height.",
+  "navyCalculated": "Calculated with the US Navy formula",
+  "neckField": "Neck (cm)",
+  "waistField": "Waist (cm)",
+  "hipField": "Hips (cm)",
+  "calculate": "Calculate",
+  "lifestyleSedentary": "Sedentary",
+  "lifestyleSedentaryDesc": "Sitting most of the day (study, office, programming).",
+  "lifestyleActive": "Active",
+  "lifestyleActiveDesc": "Standing work, walk a lot or move constantly.",
+  "trainingActivityLabel": "Main activity type",
+  "weeklyMinutes": "Minutes per week",
+  "minPerWeek": "{minutes} min/wk",
+  "minShort": "{minutes} min",
+  "trainingKcalPerDay": "training kcal / day",
+  "chooseYourPet": "Choose your pet",
+  "petCat": "Cat",
+  "petDog1": "Dog 1",
+  "petDog2": "Dog 2",
+  "petNameLabel": "Your pet's name",
+  "petNameHint": "e.g. Mochi",
+  "customizeButton": "Customize",
+  "stepExtremeContinue": "Continue",
+  "stepExtremeSkip": "Skip",
+  "extremeTitle": "Extreme personalization",
+  "extremeBody": "Give your plan a real timeline, pace and context: for how many weeks, whether you fast, and which foods and conditions to respect. Our AI cat uses it every week.",
+  "extremeEnableLabel": "Create a timed plan",
+  "extremeEnableDesc": "Turn it on to generate a 4, 8 or 12-week plan that evolves with you.",
+  "extremePhaseLabel": "Plan phase",
+  "extremePhaseCut": "Lose weight",
+  "extremePhaseMaintain": "Maintain weight",
+  "extremePhaseGain": "Gain muscle",
+  "extremePhaseRecomp": "Recomposition",
+  "extremeDurationLabel": "Duration",
+  "extremeW4": "4 weeks",
+  "extremeW8": "8 weeks",
+  "extremeW12": "12 weeks",
+  "extremeMealsLabel": "Meals per day",
+  "extremeMealsHint": "Only shapes the weekly AI plan, not your macros.",
+  "extremeMeals3": "3 meals",
+  "extremeMeals4": "4 meals",
+  "extremeMeals5": "5 meals",
+  "extremeIfLabel": "Intermittent fasting",
+  "extremeIfDesc": "The first meal of the day stays out of the plan.",
+  "extremeIf16": "16:8",
+  "extremeIf18": "18:6",
+  "extremeContextLabel": "Your context (optional)",
+  "extremeContextHint": "This context goes into every weekly AI plan. Write items separated by commas.",
+  "extremeMedicalLabel": "Medical conditions",
+  "extremeMedicalHint": "E.g. insulin resistance, hypertension, hypothyroidism…",
+  "extremeDietLabel": "Preferences / restrictions",
+  "extremeDietHint": "E.g. vegan, keto, gluten-free, lactose-free…",
+  "extremeMustHaveLabel": "Must haves",
+  "extremeMustHaveHint": "Foods you love and don't want to drop (included almost daily).",
+  "extremeAversionsLabel": "Aversions",
+  "extremeAversionsHint": "Foods to avoid completely in the plan.",
+  "extremeNotice": "Your phase resets calories: shorter plans use a more aggressive deficit, longer ones are gentler. When the plan ends, NekoFit suggests the next phase before touching anything.",
+  "planExpiredTitle": "Your plan ended",
+  "planExpiredSubtitle": "Your nutrition plan has come to an end.",
+  "@planExpiredBody": {
+    "placeholders": {
+      "weeks": { "type": "int" },
+      "phase": { "type": "String" }
+    }
+  },
+  "planExpiredBody": "Your {weeks}-week plan has ended. The suggested next phase is: {phase}. Shall we apply it? We'll recalculate your macros.",
+  "planApprove": "Apply",
+  "planSkip": "Not now",
+  "planTransited": "Phase applied! New macros calculated and a new plan is active.",
+  "@planTransitError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "planTransitError": "Could not apply the phase: {error}",
+  "saveAndStart": "Save and start",
+  "back": "Back",
+  "snackEssentials": "Complete age, height and weight to estimate your goal instantly.",
+  "snackCustomGoal": "Please describe your custom fitness goal.",
+  "snackMeasures": "Complete the measurements to estimate your body fat %.",
+  "saveProfileError": "Couldn't save profile: {error}",
+
+  "registerJoinTitle": "Join NekoFit",
+  "registerJoinSub": "Create your account and open your pantry.",
+  "registerUsernameLabel": "USERNAME",
+  "registerUsernameHint": "your_name",
+  "registerUsernameRequired": "Please enter a username",
+  "registerUsernameMin": "Username must be at least 3 characters",
+  "registerEmailHint": "you@email.com",
+  "registerPasswordHint": "At least 6 characters",
+  "registerPasswordMin": "Password must be at least 6 characters",
+  "registerCreateAccount": "CREATE ACCOUNT",
+  "registerHaveAccount": "Already have an account? ",
+  "registerSignIn": "Sign in",
+
+  "@homeHello": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeHello": "Hi, {name}",
+  "homeDefaultUser": "User",
+  "moodHappy": "HAPPY",
+  "moodFull": "FULL",
+  "moodHungry": "HUNGRY",
+  "moodOk": "OK",
+  "catTipHappy1": "Amazing! You ate well today. I'm happy too. Almost.",
+  "catTipHappy2": "Mochi approves of your diet. For once.",
+  "catTipHappy3": "Did you really eat that well? Suspicious.",
+  "catTipOk1": "All good for now… but that can change if you don't log your lunch.",
+  "catTipOk2": "Neither good nor bad. Mediocre, like your coffee this morning.",
+  "catTipOk3": "I have one eye on your pantry. The other is sleeping.",
+  "catTipFull1": "When was the last time you fed me? Asking for a friend.",
+  "catTipFull2": "Overdue logging. The cat doesn't forget.",
+  "catTipFull3": "My belly says it's been a while since you logged a meal.",
+  "catTipAngry1": "HUNGER. EXTREME. Log something. NOW.",
+  "catTipAngry2": "Zero meals logged today. Zero. Nothing. Absolute void.",
+  "catTipAngry3": "Are you eating? Because I can't see it. Log your food.",
+  "dashMacroProtein": "PROTEIN",
+  "dashMacroCarbs": "CARBS",
+  "dashMacroFats": "FATS",
+  "homeInPantry": "In pantry",
+  "homeDepleted": "Depleted",
+  "homeMealsToday": "Meals today",
+  "stepsToday": "Steps today",
+  "stepsPermissionDenied": "Health Connect permission denied.",
+  "stepsLink": "Link",
+  "homeQuickAction": "Quick action",
+  "homeViewAll": "VIEW ALL →",
+  "homeScanMeal": "Scan meal",
+  "homeScanMealHint": "PHOTO → AI",
+  "homeRestock": "Restock",
+  "homeRestockHint": "FROM DEPLETED",
+  "homeWeeklyProgress": "View weekly progress",
+  "@ticketNote": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "ticketNote": "{catName}'s note",
+  "@ticketMood": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+  "ticketMood": "MOOD: {label}",
+  "ticketFed": "FED",
+  "ticketFasting": "FASTING",
+  "@ticketDeducted": {
+    "placeholders": {
+      "count": { "type": "num" }
+    }
+  },
+  "ticketDeducted": "{count, plural, one{1 pantry item was deducted today.} other{{count} pantry items were deducted today.}}",
+
+  "categoryProteins": "Proteins",
+  "categoryCarbs": "Carbs",
+  "categoryFats": "Fats",
+  "categoryVegetables": "Vegetables",
+  "categoryDairyEggs": "Dairy/Eggs",
+  "pantryCalendarTooltip": "Weekly plan and shopping list",
+  "pantryDailyGoal": "DAILY GOAL",
+  "pantryToday": "Today!",
+  "pantryEmptyTitle": "Your pantry is empty",
+  "pantryEmptyBody": "Scan your first product and your pantry will come to life.",
+  "pantryEmptyScan": "Scan your first product",
+  "pantryEmptySearch": "Search food",
+  "pantryInStock": "IN STOCK",
+  "pantryDepleted": "DEPLETED",
+  "@pantryEmptyCategory": {
+    "placeholders": {
+      "category": { "type": "String" }
+    }
+  },
+  "pantryEmptyCategory": "No products in {category}",
+  "@pantryItemReplenished": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryItemReplenished": "{name} restocked",
+  "@pantryItemDepleted": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryItemDepleted": "{name} marked as depleted",
+  "pantryCatNameTitle": "Name your pet",
+  "pantryCatNameBody": "Give your virtual companion a name to personalize your experience.",
+  "pantryCatNameLabel": "Pet name",
+  "pantrySaveName": "Save name",
+  "tourPantry1Title": "Your pantry",
+  "tourPantry1Empty": "It's empty for now. Scan your first product to fill it up and start tracking your macros.",
+  "tourPantry1Full": "Your products live here. Tap a tab to switch shelves (categories).",
+  "tourPantry2EmptyTitle": "Search without scanning",
+  "tourPantry2Empty": "If you already know what you want, search by name and add it to your pantry without scanning.",
+  "tourPantry2FullTitle": "Restock on tap",
+  "tourPantry2Full": "In \"Depleted\", one tap on the stamp reactivates a product.",
+  "tourPantry3Title": "Plan and list",
+  "tourPantry3": "Tap the calendar icon (top right) to see your weekly plan and smart shopping list.",
+
+  "petTitle": "Your Pet",
+  "petWardrobeTooltip": "Wardrobe",
+  "@petMoodLabel": {
+    "placeholders": {
+      "mood": { "type": "String" }
+    }
+  },
+  "petMoodLabel": "MOOD · {mood}",
+  "petHunger": "HUNGER",
+  "@petHungerCritical": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "petHungerCritical": "{catName} is hungry. Feed it soon.",
+  "petHungerLow": "Lower is better. 0% = satisfied.",
+  "petLevel": "LEVEL",
+  "@petLevelValue": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "petLevelValue": "Lv {level}",
+  "petStreak": "STREAK",
+  "@petStreakDays": {
+    "placeholders": {
+      "count": { "type": "num" }
+    }
+  },
+  "petStreakDays": "{count, plural, one{day} other{days}}",
+  "petFeed": "FEED",
+  "petWardrobe": "WARDROBE",
+  "@petExpectingFood": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "petExpectingFood": "{catName} was expecting something to eat…",
+  "@petObserving": {
+    "placeholders": {
+      "catName": { "type": "String" },
+      "xp": { "type": "num" }
+    }
+  },
+  "petObserving": "{catName} is watching you · {xp} total XP",
+
+  "profileTitle": "My Profile",
+  "profileSettings": "Settings",
+  "profileAge": "Age",
+  "profileYears": "years",
+  "profileWeight": "Weight",
+  "profileHeight": "Height",
+  "profileBodyFat": "Body fat",
+  "profileDailyMacros": "DAILY MACROS",
+  "profileCalories": "Calories",
+  "profileProtein": "Protein",
+  "profileCarbs": "Carbs",
+  "profileFats": "Fats",
+  "profileData": "DATA",
+  "profileGender": "Gender",
+  "profileLifestyle": "Lifestyle",
+  "profileTraining": "Training",
+  "profileMinutesPerWeek": "Minutes/week",
+  "profileBmrFormula": "BMR formula",
+  "profileEdit": "Edit profile",
+  "profileEditDesc": "Weight, height, body fat, goal",
+  "profileStats": "Stats and progress",
+  "profileStatsDesc": "Weekly summary, calories and meals",
+  "profileRecalc": "Recalculate macros",
+  "profileRecalcDesc": "Recalculate based on your current data",
+
+  "diaryTitle": "Your diary",
+  "diarySubtitle": "FOOD LOG",
+  "diaryToday": "TODAY",
+  "diaryBackToToday": "BACK TO TODAY",
+  "diaryDayTotal": "DAY TOTAL",
+  "diarySummary": "DAY SUMMARY",
+  "diaryAdd": "Add",
+  "diaryAddSnack": "Meal added",
+  "@diaryEmptySlot": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "diaryEmptySlot": "Not logged yet. {catName} is watching.",
+  "@diaryItemsDeducted": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "diaryItemsDeducted": "ITEMS DEDUCTED: {count}",
+  "diaryMealTypeLabel": "MEAL TYPE",
+  "diaryQuantityLabel": "AMOUNT",
+  "diaryEditMeal": "Edit meal",
+  "diaryDeleteMeal": "Delete meal",
+  "diaryDeleteConfirm": "Delete",
+  "diaryEditSnackOk": "Meal updated",
+  "diaryEditSnackPartial": "Meal updated, but the pantry couldn't be adjusted. Check it.",
+  "diaryDeleteSnackOk": "Meal deleted",
+  "diaryDeleteSnackPartial": "Meal deleted, but the product couldn't be returned to the pantry.",
+  "diarySave": "Save",
+  "diarySaving": "Saving…",
+  "diaryTour1": "Your diary",
+  "diaryTour1Msg": "Switch days with the arrows. Each meal is saved on the date you log it.",
+  "diaryTour2": "Day summary",
+  "diaryTour2Msg": "Your accumulated kcal and macros live here. The goal comes from your profile.",
+  "diaryTour3": "Log a meal",
+  "diaryTour3Msg": "Tap \"Add\" (or the +) to log a meal from the pantry or the scanner.",
+  "diaryFasting": "FASTING",
+  "diaryQuoteNothing": "Nothing logged today. ",
+  "@diaryQuoteMeals": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "diaryQuoteMeals": "{count} of 4 meals. ",
+  "@diaryQuoteRemainingKcal": {
+    "placeholders": {
+      "kcal": { "type": "num" }
+    }
+  },
+  "diaryQuoteRemainingKcal": "{kcal} kcal remaining",
+  "@diaryQuoteRemainingPro": {
+    "placeholders": {
+      "pro": { "type": "num" }
+    }
+  },
+  "diaryQuoteRemainingPro": " and {pro} g of protein",
+  "diaryQuoteMet": "Goal met. ",
+  "diaryQuotePantryEmpty": "Your pantry is empty. ",
+  "@diaryQuotePantryNames": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "diaryQuotePantryNames": "You have {names} in the pantry. ",
+  "diaryQuoteEnd": "Just in case.",
+  "diaryWhatsEaten": "What did you eat?",
+  "@diaryDeleteMealConfirm": {
+    "placeholders": {
+      "foodName": { "type": "String" }
+    }
+  },
+  "diaryDeleteMealConfirm": "Remove {foodName} from the log?",
+
+  "nlTitle": "Photo of the nutrition label",
+  "nlCamera": "Camera",
+  "nlGallery": "Gallery",
+  "nlDetectedText": "Detected text",
+  "nlSave": "Save to pantry",
+  "nlPhotoHint": "Take a photo of the nutrition label",
+  "nlName": "Product name",
+  "nlQuantity": "Amount in the pantry",
+  "nlTableUnit": "Table unit",
+  "nlCalories": "Calories",
+  "nlProteins": "Protein",
+  "nlCarbs": "Carbs",
+  "nlFats": "Fat",
+  "@nlConfidenceDetected": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "nlConfidenceDetected": "Detected {percent}% of the macros. Review the values before saving.",
+  "nlToastName": "Give the product a name",
+  "nlToastGrams": "Invalid amount in grams",
+  "nlToastOneMacro": "I need at least one macro",
+  "@nlToastReadError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "nlToastReadError": "Couldn't read the photo: {error}",
+  "nlToastUpload": "Couldn't upload the photo, but I saved the product",
+  "@nlToastSaved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "nlToastSaved": "\"{name}\" added to your pantry",
+
+  "notifThemeHeader": "THEME",
+  "notifThemeDark": "Dark",
+  "notifThemeLight": "Light",
+  "settingsLanguageHeader": "LANGUAGE",
+  "settingsLanguageSystem": "System",
+  "settingsLanguageSpanish": "Español",
+  "settingsLanguageEnglish": "English",
+  "notifMealReminders": "MEAL REMINDERS",
+  "notifMealTimeHint": "Time to log your meal of the day",
+  "notifBreakfast": "Breakfast",
+  "notifLunch": "Lunch",
+  "notifSnack": "Snack",
+  "notifDinner": "Dinner",
+  "notifSaving": "Saving...",
+  "notifSaveSchedules": "Save schedules",
+  "notifErrorUpdateConfig": "Couldn't update the settings.",
+  "notifErrorSaveSchedules": "Couldn't save the schedules. Try again.",
+  "notifSavedNotActivated": "Schedules saved · couldn't activate the notifications",
+  "notifSavedActivated": "Schedules saved · notifications activated",
+  "notifSmartHeader": "SMART NOTIFICATIONS",
+  "notifSmartTitle": "Contextual tips from the cat",
+  "notifSmartSubtitle": "The cat lets you know at key times: if you're low on kcal (18:00), if you broke your streak (19:00), if a product has been in the pantry for days (20:00) and your protein milestones (21:00).",
+  "notifTestNotification": "Test notification (Debug)",
+  "notifTestNotificationDesc": "Fires a heads-up banner notification in 10 seconds",
+  "notifAbout": "About NekoFit",
+  "@notifVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "notifVersion": "Version {version}",
+  "notifResetTours": "Reset tutorials",
+  "notifResetToursDesc": "Show the cat tours again (Pantry and Diary)",
+  "notifClose": "Close",
+  "notifAboutTagline": "NekoFit · your personal konbini for macros",
+  "notifLogout": "Log out",
+  "notifLogoutDesc": "Back to sign in",
+  "notifLogoutConfirmBody": "Are you sure you want to leave? Your pantry and macros stay saved in the cloud.",
+  "notifLogoutConfirm": "Leave",
+  "notifTestSnackOk": "Test notification in 10s. Minimize the app to see the banner.",
+  "@notifTestSnackError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "notifTestSnackError": "Error scheduling the test notification: {error}",
+  "notifResetToursSnack": "Tutorials reset: Mochi will guide you again.",
+
+  "wardrobeMood": "MOOD",
+  "wardrobeFree": "Free",
+  "wardrobeLocked": "LOCKED",
+  "wardrobeEquipped": "EQUIPPED",
+  "wardrobeInUse": "IN USE",
+  "wardrobeEquip": "EQUIP",
+  "wardrobeUnlockFree": "UNLOCK FREE",
+  "wardrobeNotYet": "NOT YET",
+  "wardrobeHint": "Tap and hold to discover the story behind each outfit.",
+  "wardrobeInYourWardrobe": "✔ In your wardrobe",
+  "wardrobeUnlockFailed": "I couldn't unlock it. No idea why.",
+  "wardrobeEquipLocked": "Unlock it first. You can't use what you don't own.",
+  "@wardrobeUnlockedSnack": {
+    "placeholders": {
+      "outfitName": { "type": "String" }
+    }
+  },
+  "wardrobeUnlockedSnack": "{outfitName} unlocked. Don't show it off too much.",
+  "@wardrobeProgressStreak": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "value": { "type": "int" }
+    }
+  },
+  "wardrobeProgressStreak": "Streak {current}/{value} days",
+  "@wardrobeProgressLevel": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "wardrobeProgressLevel": "Level {current}/{total}",
+
+  "scanTitle": "SCAN PRODUCT",
+  "scanPrompt": "Point at the product's barcode",
+  "scanWaiting": "Waiting for a barcode...",
+  "scanSearching": "Searching for product...",
+  "scanSearchButton": "Search",
+  "scanSearchByName": "Search by name",
+  "scanSearchProduct": "Search product",
+  "scanSearchHint": "e.g. Quaker Cinnamon Oatmeal",
+  "scanNoMacrosData": "No macros data",
+  "@scanNoMacrosBody": {
+    "placeholders": {
+      "barcode": { "type": "String" }
+    }
+  },
+  "scanNoMacrosBody": "Barcode {barcode} doesn't have enough data. Search for it by name.",
+  "scanLabelPhoto": "Photo of the table",
+  "@scanCodeDetected": {
+    "placeholders": {
+      "barcode": { "type": "String" }
+    }
+  },
+  "scanCodeDetected": "Code: {barcode}",
+  "scanGramsSnack": "How many grams are you adding to the pantry?",
+  "scanProductAdded": "Product added to the pantry",
+  "scanPhotoCustom": "Custom photo ready",
+  "scanPhotoOff": "Open Food Facts photo",
+  "scanPhotoNone": "No photo available",
+  "scanMacrosPer100ml": "Macros per 100 ml",
+  "scanGramsHint": "e.g. 500",
+  "scanAddToPantry": "Add to Pantry",
+
+  "prodEditTitle": "Edit product",
+  "prodUnit": "Unit",
+  "prodCategory": "Category",
+  "prodPrice": "Price (optional)",
+  "prodSave": "Save changes",
+  "prodCompareSimilar": "Compare with similar",
+  "prodPhotoHint": "Add or change the product photo",
+  "prodUpdated": "Product updated",
+  "prodDeleteTitle": "Delete product",
+  "@prodDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "prodDeleteConfirm": "Are you sure you want to remove \"{name}\" from your pantry?",
+  "@prodPhotoUploadError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "prodPhotoUploadError": "I couldn't upload the photo: {error}",
+  "@prodMacroField": {
+    "placeholders": {
+      "label": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "prodMacroField": "{label} (per 100{unit})",
+
+  "peditPetSection": "VIRTUAL PET",
+  "peditGoalSection": "FITNESS GOAL",
+  "peditSavedSnack": "Profile updated",
+  "peditMacrosTitle": "Your daily macros",
+  "peditActivityPesasHit": "Weights (HIIT / high intensity)",
+  "peditActivityPesasModerado": "Weights (moderate pace)",
+  "peditActivityCorrerModerado": "Running (moderate pace)",
+  "peditActivityCorrerRapido": "Running (fast pace / intervals)",
+  "peditActivityCaminar": "Walking",
+  "peditActivityCiclismo": "Cycling",
+
+  "statsTitle": "Statistics",
+  "statsWeek": "Week",
+  "statsMonth": "Month",
+  "statsYear": "Year",
+  "statsError": "We couldn't load your statistics.",
+  "statsPeriodSummary": "Period summary",
+  "statsCalPerDay": "Cal/day",
+  "statsOnTargetDays": "On-target days",
+  "@statsOnTargetUnit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "statsOnTargetUnit": "of {count}",
+  "statsCurrentStreak": "Current streak",
+  "statsDays": "days",
+  "statsNoRecords": "No records in this period — log a meal to see your trend",
+  "@statsYearSummary": {
+    "placeholders": {
+      "days": { "type": "int" },
+      "goal": { "type": "int" }
+    }
+  },
+  "statsYearSummary": "{days} days with records this year · goal {goal} kcal",
+  "@statsPeriodSummaryDetail": {
+    "placeholders": {
+      "logged": { "type": "int" },
+      "total": { "type": "int" },
+      "goal": { "type": "int" }
+    }
+  },
+  "statsPeriodSummaryDetail": "{logged} of {total} days with records · goal {goal} kcal",
+  "statsCaloriesWeek": "Calories this week",
+  "statsCaloriesMonth": "Calories this month",
+  "statsCaloriesYear": "Calories this year",
+  "statsGoal": "Goal",
+  "statsRecentMeals": "Recent meals",
+  "statsWeekdayMon": "Mon",
+  "statsWeekdayTue": "Tue",
+  "statsWeekdayWed": "Wed",
+  "statsWeekdayThu": "Thu",
+  "statsWeekdayFri": "Fri",
+  "statsWeekdaySat": "Sat",
+  "statsWeekdaySun": "Sun",
+  "statsMonthJan": "Jan",
+  "statsMonthFeb": "Feb",
+  "statsMonthMar": "Mar",
+  "statsMonthApr": "Apr",
+  "statsMonthMay": "May",
+  "statsMonthJun": "Jun",
+  "statsMonthJul": "Jul",
+  "statsMonthAug": "Aug",
+  "statsMonthSep": "Sep",
+  "statsMonthOct": "Oct",
+  "statsMonthNov": "Nov",
+  "statsMonthDec": "Dec",
+
+  "searchHint": "e.g. chicken breast, rice, apple...",
+  "searchEmptyNoProducts": "I couldn't find products in the search.\nIs it a fresh food?",
+  "searchAddManually": "Add manually",
+  "searchOrTakeLabelPhoto": "Or take a photo of the label",
+  "searchFreshSuggestions": "FRESH SUGGESTIONS",
+  "searchSupermarketProducts": "SUPERMARKET PRODUCTS",
+  "searchProduct": "Product",
+  "@searchMacroKcal": {
+    "placeholders": {
+      "kcal": { "type": "num" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroKcal": "{kcal} kcal/100{unit}",
+  "@searchMacroProtein": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroProtein": "P: {value}g/100{unit}",
+  "@searchMacroCarbs": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroCarbs": "C: {value}g/100{unit}",
+  "@searchMacroFats": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroFats": "F: {value}g/100{unit}",
+  "@searchFreshMacros": {
+    "placeholders": {
+      "calories": { "type": "num" },
+      "proteins": { "type": "String" },
+      "carbs": { "type": "String" },
+      "fats": { "type": "String" }
+    }
+  },
+  "searchFreshMacros": "{calories} kcal · P: {proteins}g · C: {carbs}g · F: {fats}g",
+  "searchPhotoReady": "Photo ready to save.",
+  "searchPhotoFetchOnSave": "I'll fetch the photo from Open Food Facts when saving.",
+  "searchPhotoNoneAdd": "No photo. Tap the box or use the buttons to add one.",
+  "searchAskName": "What is this food called?",
+  "@searchManualAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "searchManualAdded": "{name} added to your pantry",
+  "searchAddFreshFood": "Add fresh food",
+  "searchFoodName": "Food name",
+  "searchFoodNameHint": "e.g. Chicken breast, Banana, Rice...",
+  "searchSearchingImage": "Searching for image...",
+  "searchImageFoundOff": "Image found on Open Food Facts",
+  "searchUsingImageOff": "Using image from Open Food Facts.",
+  "searchCategory": "CATEGORY",
+  "searchValuesPer100g": "VALUES PER 100g",
+  "searchQuantityAdd": "Amount to add to the pantry",
+
+  "planTitle": "Plan & pantry",
+  "planRegenerateTooltip": "Regenerate plan",
+  "planTabThisWeek": "This week",
+  "planTabToBuy": "To buy",
+  "planGenerating": "Generating a plan with your cat…",
+  "planEmptyTitle": "No plan yet",
+  "planEmptyMessage": "Tap the refresh button to generate the plan with AI.",
+  "planWeekTitle": "This week's plan",
+  "@planAvgDaily": {
+    "placeholders": {
+      "avg": { "type": "String" },
+      "goal": { "type": "String" }
+    }
+  },
+  "planAvgDaily": "{avg} kcal/day · goal {goal}",
+  "@planWeekTotal": {
+    "placeholders": {
+      "days": { "type": "int" },
+      "total": { "type": "String" }
+    }
+  },
+  "planWeekTotal": "{days} days · {total} kcal in total",
+  "planShoppingLoading": "Cross-checking pantry, plan and predictions…",
+  "planListEmptyTitle": "Empty list",
+  "planListEmptyMessage": "Your pantry is up to date. Come back when something runs out or gets close.",
+  "planRecalculate": "Recalculate",
+  "planSmartList": "Smart list",
+  "@planMealsDone": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "planMealsDone": "{done} / {total} done",
+  "planRegenerated": "Plan regenerated!",
+  "@planGenerateError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "planGenerateError": "I couldn't generate the plan: {error}",
+  "planMealDone": "Meal marked as done.",
+  "planMealUndone": "Meal marked as not done.",
+  "planReasonDepleted": "OUT",
+  "planReasonCritical": "CRITICAL",
+  "planReasonPlan": "PLAN",
+  "planReasonManual": "MANUAL",
+  "planDayMon": "MON",
+  "planDayTue": "TUE",
+  "planDayWed": "WED",
+  "planDayThu": "THU",
+  "planDayFri": "FRI",
+  "planDaySat": "SAT",
+  "planDaySun": "SUN"
+}

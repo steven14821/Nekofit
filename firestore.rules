@@ -1,0 +1,109 @@
+rules_version = '2';
+
+// Reglas de seguridad de Firestore de NekoFit.
+//
+// Principios:
+//  1. Cada usuario solo puede leer/escribir su propio espacio: /users/{uid}.
+//  2. El perfil /users/{uid} debe estar COMPLETO (age, weight, height,
+//     fitnessGoal, macroGoals) antes de que el cliente pueda escribir en las
+//     subcolecciones de datos de salud (diario, despensa, recetas, mascota,
+//     chat). Espejo del `_isCompleteProfile` del AuthGateController: así un
+//     cliente manipulado no puede saltarse el onboarding.
+//  3. El documento de perfil solo se crea con los campos esperados; el alta
+//     "definitiva" de objetivos debe llegar validada por el cliente o por una
+//     Cloud Function en el futuro (ver ESTILO.md). El onboarding únicamente
+//     puede tocar el flag `seenOnboarding` (update parcial).
+//
+// ADVERTENCIA: estas reglas NO se pueden compilar/desplegar aquí (no hay
+// backend de Firebase en este repo). Aplícalas en Firebase Console o con
+// `firebase deploy --only firestore:rules` antes del release.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function ownerOf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Espejo cliente de AuthGateController._isCompleteProfile: el documento
+    // del perfil debe existir y traer los campos reales del ProfileSetupScreen.
+    function isProfileComplete() {
+      let d = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      return d != null
+        && d.age >= 1
+        && d.weight > 0
+        && d.height > 0
+        && 'fitnessGoal' in d
+        && 'macroGoals' in d;
+    }
+
+    // El alta del perfil debe traer los campos esperados y valores válidos.
+    function validProfileOnWrite() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['age', 'weight', 'height', 'fitnessGoal', 'macroGoals'])
+        && (data.age is int && data.age >= 1)
+        && (data.weight is number && data.weight > 0)
+        && (data.height is number && data.height > 0)
+        && data.fitnessGoal is string
+        && data.macroGoals is map
+        && data.size() <= 12; // evita "storage" de blob arbitrario en el perfil
+    }
+
+    // El onboarding solo puede marcar el flag `seenOnboarding` (update parcial).
+    function isOnboardingTouch() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['seenOnboarding']);
+    }
+
+    // Subcolecciones «sensibles»: solo escritura con perfil completo del dueño.
+    function protectedWrite(uid) {
+      return ownerOf(uid) && isProfileComplete();
+    }
+
+    // ── Perfil ────────────────────────────────────────────────────────────
+
+    match /users/{uid} {
+      allow read: if ownerOf(uid);
+      allow create: if ownerOf(uid) && validProfileOnWrite();
+      allow update: if ownerOf(uid)
+        && (validProfileOnWrite() || isOnboardingTouch());
+      allow delete: if false;
+
+      // ── Diario alimentario ────────────────────────────────────────────────
+      match /meals/{mealId} {
+        allow read, write: if protectedWrite(uid);
+      }
+
+      // ── Planes nutricionales (personalización extrema) ───────────────────
+      match /plans/{planId} {
+        allow read, write: if protectedWrite(uid);
+      }
+
+      // ── Despensa ──────────────────────────────────────────────────────────
+      match /pantry/{itemId} {
+        allow read, write: if protectedWrite(uid);
+      }
+
+      // ── Recetas del usuario ───────────────────────────────────────────────
+      match /recipes/{recipeId} {
+        allow read, write: if protectedWrite(uid);
+      }
+
+      // ── Historial de IA (asistente) ───────────────────────────────────────
+      match /chat_history/{messageId} {
+        allow read, write: if protectedWrite(uid);
+      }
+
+      // ── Mascota ───────────────────────────────────────────────────────────
+      match /pet/{docId} {
+        allow read, write: if protectedWrite(uid);
+      }
+    }
+  }
+}

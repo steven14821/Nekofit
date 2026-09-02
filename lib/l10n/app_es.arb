@@ -1,0 +1,834 @@
+{
+  "@@locale": "es",
+  "@@last_modified": "2026-08-30",
+
+  "appTitle": "NekoFit",
+  "tagline": "Tu konbini personal",
+  "retry": "Reintentar",
+  "authGateErrorTitle": "No pudimos recuperar tu perfil",
+  "authGateErrorBody": "Revisa tu conexión e inténtalo de nuevo.",
+
+  "navHome": "Inicio",
+  "navPantry": "Despensa",
+  "navDiary": "Diario",
+  "navPet": "Mascota",
+  "navProfile": "Perfil",
+
+  "loginWelcome": "¡Hola de nuevo!",
+  "loginWelcomeSub": "Tu racha y Mochi te esperan.",
+  "loginEmailLabel": "CORREO ELECTRÓNICO",
+  "loginPasswordLabel": "CONTRASEÑA",
+  "loginForgotPassword": "¿Olvidaste tu contraseña?",
+  "loginSignIn": "INICIAR SESIÓN",
+  "loginOrContinueWith": "O CONTINÚA CON",
+  "loginContinueGoogle": "Continuar con Google",
+  "loginEmailErrorEmpty": "Por favor ingresa tu correo electrónico",
+  "loginEmailErrorInvalid": "Por favor ingresa un correo válido",
+  "loginPasswordErrorEmpty": "Por favor ingresa tu contraseña",
+  "loginNoAccount": "¿No tienes cuenta? ",
+  "loginRegister": "Regístrate aquí",
+  "loginGoogleFailed": "No se pudo iniciar sesión con Google. Revisa tu conexión e inténtalo de nuevo.",
+  "forgotTitle": "Recuperar Contraseña",
+  "forgotBody": "Ingresa tu correo electrónico registrado y te enviaremos un enlace para restablecer tu contraseña.",
+  "emailLabel": "Correo electrónico",
+  "emailEmpty": "Ingresa tu correo",
+  "emailInvalid": "Ingresa un correo válido",
+  "cancel": "Cancelar",
+  "send": "Enviar",
+  "resetEmailSent": "Enlace de recuperación enviado con éxito.",
+  "@errorPrefix": {
+    "description": "Prefijo de errores; {error} es el mensaje del backend.",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "errorPrefix": "Error: {error}",
+
+  "onboardingSkip": "OMITIR",
+  "onboardingTitle": "¿Qué vas a ganar?",
+  "onboardingSubtitle": "3 cosas que NekoFit hace por ti",
+  "onboardingSlide1Title": "Registra tu despensa\nen 10 segundos",
+  "onboardingSlide1Subtitle": "Escanea o escribe tus productos y NekoFit lleva el inventario por ti. Sabrás qué te falta antes de que se acabe.",
+  "onboardingSlide2Title": "La IA identifica lo que\ncomes con una foto",
+  "onboardingSlide2Subtitle": "Saca una foto a tu plato y la IA calcula calorías, proteínas, carbohidratos y grasas al instante. Sin pesadoras ni tablas.",
+  "onboardingSlide3Title": "Tu mascota te obliga\na ser constante",
+  "onboardingSlide3Subtitle": "Cada comida registrada alimenta a tu mascota. Sube de nivel, desbloquea outfits y cuida tu racha: la suya depende de la tuya.",
+  "start": "EMPEZAR",
+  "next": "SIGUIENTE",
+
+  "stepEssential": "Lo esencial",
+  "stepPersonalize": "Personaliza",
+  "stepExtreme": "Extremo",
+  "essentialsTitle": "Empieza en 30 segundos",
+  "essentialsBody": "Tu género, edad, altura y peso bastan para calcular tu meta calórica al instante. Lo demás lo afinas después.",
+  "genderFemale": "Femenino",
+  "genderMale": "Masculino",
+  "ageField": "Edad (años)",
+  "heightField": "Altura (cm)",
+  "weightField": "Peso actual (kg)",
+  "goalQuestion": "¿Cuál es tu objetivo?",
+  "customGoalLabel": "Describe tu objetivo específico",
+  "customGoalHint": "Ej. Incrementar resistencia para maratón de 10km",
+  "goalLoseWeight": "Perder peso",
+  "goalLoseWeightDesc": "Déficit calórico moderado, priorizando proteína para preservar músculo.",
+  "goalMaintainWeight": "Mantener peso",
+  "goalMaintainWeightDesc": "Equilibrio energético para sostener peso y recomposición corporal.",
+  "goalGainMuscle": "Ganar músculo",
+  "goalGainMuscleDesc": "Superávit controlado + proteína alta para hipertrofia.",
+  "goalCustom": "Otro/Personalizado",
+  "goalCustomDesc": "Si persigues metas atléticas específicas u objetivos clínicos.",
+  "recommendedDailyCalories": "Calorías diarias recomendadas",
+  "@bmrFormula": {
+    "description": "Muestra la fórmula BMR usada; {formula} es katch o mifflin.",
+    "placeholders": {
+      "formula": { "type": "String" }
+    }
+  },
+  "bmrFormula": "Fórmula BMR: {formula}",
+  "bmrFormulaKatch": "Katch-McArdle",
+  "bmrFormulaMifflin": "Mifflin-St Jeor",
+  "macroCarbs": "Carbohidratos",
+  "macroProteins": "Proteínas",
+  "macroFats": "Grasas",
+  "personalizeTitle": "Personaliza tu plan",
+  "personalizeBody": "Opcional: afina tu cálculo con % de grasa, tu actividad diaria y tu mascota.",
+  "bodyFatSection": "% de grasa corporal",
+  "bodyFatSectionHint": "Permite usar la fórmula Katch-McArdle, mucho más precisa que las estándar.",
+  "lifestyleSection": "Estilo de vida diario",
+  "lifestyleSectionHint": "¿Qué haces la mayor parte del día, sin contar el entrenamiento?",
+  "trainingSection": "Gasto por entrenamiento",
+  "trainingSectionHint": "Sumamos kcal fijas según el tipo de actividad y los minutos por semana.",
+  "petSection": "Conoce a tu mascota",
+  "petSectionHint": "Asigna un nombre a tu compañero virtual de nutrición y cocina.",
+  "methodVisualTitle": "Método visual",
+  "methodVisualDesc": "Eliges tu rango con imágenes y descripciones.",
+  "methodNavyTitle": "Método US Navy",
+  "methodNavyDesc": "Cálculo real con cinta métrica (cuello, cintura, cadera).",
+  "myBodyFatEstimated": "Tu % de grasa estimado",
+  "navyHintMale": "La cintura debe ser mayor que el cuello.",
+  "navyHintFemale": "Completa cuello, cintura, cadera y altura.",
+  "navyCalculated": "Calculado por fórmula US Navy",
+  "neckField": "Cuello (cm)",
+  "waistField": "Cintura (cm)",
+  "hipField": "Cadera (cm)",
+  "calculate": "Calcular",
+  "lifestyleSedentary": "Sedentario",
+  "lifestyleSedentaryDesc": "Paso sentado la mayor parte del dia (estudio, oficina, programacion).",
+  "lifestyleActive": "Activo",
+  "lifestyleActiveDesc": "Trabajo de pie, caminas mucho o te mueves constantemente.",
+  "trainingActivityLabel": "Tipo de actividad principal",
+  "weeklyMinutes": "Minutos por semana",
+  "@minPerWeek": {
+    "description": "Minutos por semana mostrados como cantidad.",
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "minPerWeek": "{minutes} min/sem",
+  "@minShort": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "minShort": "{minutes} min",
+  "trainingKcalPerDay": "kcal de entrenamiento / dia",
+  "chooseYourPet": "Elige tu mascota",
+  "petCat": "Gato",
+  "petDog1": "Perro 1",
+  "petDog2": "Perro 2",
+  "petNameLabel": "Nombre de tu mascota",
+  "petNameHint": "Ej. Mochi",
+  "customizeButton": "Personalizar",
+  "stepExtremeContinue": "Continuar",
+  "stepExtremeSkip": "Saltar",
+  "extremeTitle": "Personalización extrema",
+  "extremeBody": "Dale a tu plan un plazo, ritmo y contexto reales: por cuántas semanas, si ayunas, y qué alimentos y condiciones respetar. Nuestro gato IA lo usará cada semana.",
+  "extremeEnableLabel": "Crear plan con plazo",
+  "extremeEnableDesc": "Actívalo para generar un plan de 4, 8 o 12 semanas que evoluciona contigo.",
+  "extremePhaseLabel": "Fase del plan",
+  "extremePhaseCut": "Perder peso",
+  "extremePhaseMaintain": "Mantener peso",
+  "extremePhaseGain": "Ganar músculo",
+  "extremePhaseRecomp": "Recomposición",
+  "extremeDurationLabel": "Duración",
+  "extremeW4": "4 semanas",
+  "extremeW8": "8 semanas",
+  "extremeW12": "12 semanas",
+  "extremeMealsLabel": "Comidas al día",
+  "extremeMealsHint": "Afecta solo al plan semanal IA, no a tus macros.",
+  "extremeMeals3": "3 comidas",
+  "extremeMeals4": "4 comidas",
+  "extremeMeals5": "5 comidas",
+  "extremeIfLabel": "Ayuno intermitente",
+  "extremeIfDesc": "La primera comida de la mañana queda fuera del plan.",
+  "extremeIf16": "16:8",
+  "extremeIf18": "18:6",
+  "extremeContextLabel": "Tu contexto (opcional)",
+  "extremeContextHint": "Este contexto viaja a cada plan semanal IA. Escribe separado por comas.",
+  "extremeMedicalLabel": "Condiciones médicas",
+  "extremeMedicalHint": "P. ej. resistencia a la insulina, hipertensión, hipotiroidismo…",
+  "extremeDietLabel": "Preferencias / restricciones",
+  "extremeDietHint": "P. ej. vegana, keto, sin gluten, sin lactosa…",
+  "extremeMustHaveLabel": "Imprescindibles",
+  "extremeMustHaveHint": "Alimentos que te encantan y NO quieres soltar (se incluyen casi a diario).",
+  "extremeAversionsLabel": "Aversiones",
+  "extremeAversionsHint": "Alimentos a evitar por completo en el plan.",
+  "extremeNotice": "Tu fase redefine las calorías: con menos plazo el déficit es más agresivo, con más semanas es más suave. Al vencer el plan, NekoFit te sugerirá la siguiente fase antes de tocarte nada.",
+  "planExpiredTitle": "Tu plan terminó",
+  "planExpiredSubtitle": "Tu plan nutricional ha llegado a su fin.",
+  "@planExpiredBody": {
+    "placeholders": {
+      "weeks": { "type": "int" },
+      "phase": { "type": "String" }
+    }
+  },
+  "planExpiredBody": "Tu plan de {weeks} semanas terminó. La siguiente fase sugerida es: {phase}. ¿La aplicamos? Recalcularemos tus macros.",
+  "planApprove": "Aplicar",
+  "planSkip": "Ahora no",
+  "planTransited": "¡Fase aplicada! Nuevos macros calculados y nuevo plan activo.",
+  "@planTransitError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "planTransitError": "No se pudo aplicar la fase: {error}",
+  "saveAndStart": "Guardar y empezar",
+  "back": "Atrás",
+  "snackEssentials": "Completa edad, altura y peso para calcular tu meta al instante.",
+  "snackCustomGoal": "Por favor describe tu objetivo fitness personalizado.",
+  "snackMeasures": "Completa las medidas para calcular tu % de grasa.",
+  "@saveProfileError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "saveProfileError": "Error al guardar perfil: {error}",
+
+  "registerJoinTitle": "Únete a NekoFit",
+  "registerJoinSub": "Crea tu cuenta y abre tu despensa.",
+  "registerUsernameLabel": "NOMBRE DE USUARIO",
+  "registerUsernameHint": "tu_nombre",
+  "registerUsernameRequired": "Por favor ingresa un nombre de usuario",
+  "registerUsernameMin": "El nombre de usuario debe tener al menos 3 caracteres",
+  "registerEmailHint": "tú@correo.com",
+  "registerPasswordHint": "Mínimo 6 caracteres",
+  "registerPasswordMin": "La contraseña debe tener al menos 6 caracteres",
+  "registerCreateAccount": "CREAR CUENTA",
+  "registerHaveAccount": "¿Ya tienes cuenta? ",
+  "registerSignIn": "Inicia sesión",
+
+  "@homeHello": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeHello": "Hola, {name}",
+  "homeDefaultUser": "Usuario",
+  "moodHappy": "FELIZ",
+  "moodFull": "LLENO",
+  "moodHungry": "HAMBRE",
+  "moodOk": "OK",
+  "catTipHappy1": "¡Increíble! Has comido bien hoy. Yo también estoy contento. Casi.",
+  "catTipHappy2": "Mochi aprueba tu dieta. Por una vez.",
+  "catTipHappy3": "¿De verdad comiste tan bien? Sospechoso.",
+  "catTipOk1": "Todo bien por ahora… pero eso puede cambiar si no registras tu almuerzo.",
+  "catTipOk2": "Ni bien ni mal. Mediocre, como tu café de esta mañana.",
+  "catTipOk3": "Tengo un ojo en tu despensa. El otro está durmiendo.",
+  "catTipFull1": "¿Cuándo fue la última vez que me diste de comer? Pregunto para un amigo.",
+  "catTipFull2": "Registro atrasado. El gato no olvida.",
+  "catTipFull3": "Mi panza dice que llevas tiempo sin pasar por el diario.",
+  "catTipAngry1": "HAMBRE. EXTREMA. Registra algo. YA.",
+  "catTipAngry2": "Cero comidas registradas hoy. Cero. Nada. Vacío total.",
+  "catTipAngry3": "¿Estás comiendo? Porque yo no lo veo. Registra tu comida.",
+  "dashMacroProtein": "PROTEÍNA",
+  "dashMacroCarbs": "CARBOS",
+  "dashMacroFats": "GRASAS",
+  "homeInPantry": "En despensa",
+  "homeDepleted": "Agotados",
+  "homeMealsToday": "Comidas hoy",
+  "stepsToday": "Pasos hoy",
+  "stepsPermissionDenied": "Permiso de Health Connect denegado.",
+  "stepsLink": "Vincular",
+  "homeQuickAction": "Acción rápida",
+  "homeViewAll": "VER TODO →",
+  "homeScanMeal": "Analizar plato",
+  "homeScanMealHint": "FOTO → IA",
+  "homeRestock": "Reabastecer",
+  "homeRestockHint": "DESDE AGOTADOS",
+  "homeWeeklyProgress": "Ver progreso semanal",
+  "@ticketNote": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "ticketNote": "Nota de {catName}",
+  "@ticketMood": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+  "ticketMood": "MOOD: {label}",
+  "ticketFed": "ALIMENTADO",
+  "ticketFasting": "EN AYUNAS",
+  "@ticketDeducted": {
+    "placeholders": {
+      "count": { "type": "num" }
+    }
+  },
+  "ticketDeducted": "{count, plural, one{Se descontó 1 ítem de la despensa hoy.} other{Se descontaron {count} ítems de la despensa hoy.}}",
+
+  "categoryProteins": "Proteínas",
+  "categoryCarbs": "Carbohidratos",
+  "categoryFats": "Grasas",
+  "categoryVegetables": "Vegetales",
+  "categoryDairyEggs": "Lácteos/Huevos",
+  "pantryCalendarTooltip": "Plan semanal y lista de compras",
+  "pantryDailyGoal": "META DIARIA",
+  "pantryToday": "¡Hoy!",
+  "pantryEmptyTitle": "Tu despensa está vacía",
+  "pantryEmptyBody": "Escanea tu primer producto y tu despensa cobrará vida.",
+  "pantryEmptyScan": "Escanear tu primer producto",
+  "pantryEmptySearch": "Buscar alimento",
+  "pantryInStock": "EN EXISTENCIA",
+  "pantryDepleted": "AGOTADOS",
+  "@pantryEmptyCategory": {
+    "placeholders": {
+      "category": { "type": "String" }
+    }
+  },
+  "pantryEmptyCategory": "No hay productos en {category}",
+  "@pantryItemReplenished": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryItemReplenished": "{name} reabastecido",
+  "@pantryItemDepleted": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pantryItemDepleted": "{name} marcado como agotado",
+  "pantryCatNameTitle": "Nombra a tu mascota",
+  "pantryCatNameBody": "Asigna un nombre a tu compañero virtual para personalizar tu experiencia.",
+  "pantryCatNameLabel": "Nombre de la mascota",
+  "pantrySaveName": "Guardar nombre",
+  "tourPantry1Title": "Tu despensa",
+  "tourPantry1Empty": "Está vacía por ahora. Escanea tu primer producto para llenarla y empezar a controlar tus macros.",
+  "tourPantry1Full": "Aquí viven tus productos. Toca una pestaña para cambiar de anaquel (categoría).",
+  "tourPantry2EmptyTitle": "Buscar sin escanear",
+  "tourPantry2Empty": "Si ya sabes qué quieres, búscalo por nombre y añádelo a tu despensa sin escanear.",
+  "tourPantry2FullTitle": "Reabastecer al toque",
+  "tourPantry2Full": "En \"Agotados\" basta un toque sobre el sello para reactivar un producto.",
+  "tourPantry3Title": "Plan y lista",
+  "tourPantry3": "Pulsa el icono del calendario (arriba a la derecha) para ver tu plan semanal y la lista de compras inteligente.",
+
+  "petTitle": "Tu Mascota",
+  "petWardrobeTooltip": "Vestidor",
+  "@petMoodLabel": {
+    "placeholders": {
+      "mood": { "type": "String" }
+    }
+  },
+  "petMoodLabel": "HUMOR · {mood}",
+  "petHunger": "HAMBRE",
+  "@petHungerCritical": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "petHungerCritical": "{catName} está hambriento. Dale de comer pronto.",
+  "petHungerLow": "Más bajo es mejor. 0% = satisfecho.",
+  "petLevel": "NIVEL",
+  "@petLevelValue": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "petLevelValue": "Lv {level}",
+  "petStreak": "RACHA",
+  "@petStreakDays": {
+    "placeholders": {
+      "count": { "type": "num" }
+    }
+  },
+  "petStreakDays": "{count, plural, one{día} other{días}}",
+  "petFeed": "DAR DE COMER",
+  "petWardrobe": "VESTIDOR",
+  "@petExpectingFood": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "petExpectingFood": "{catName} esperaba algo de comer…",
+  "@petObserving": {
+    "placeholders": {
+      "catName": { "type": "String" },
+      "xp": { "type": "num" }
+    }
+  },
+  "petObserving": "{catName} te observa · XP total {xp}",
+
+  "profileTitle": "Mi Perfil",
+  "profileSettings": "Configuración",
+  "profileAge": "Edad",
+  "profileYears": "años",
+  "profileWeight": "Peso",
+  "profileHeight": "Altura",
+  "profileBodyFat": "Grasa",
+  "profileDailyMacros": "MARCOS DIARIOS",
+  "profileCalories": "Calorías",
+  "profileProtein": "Proteína",
+  "profileCarbs": "Carbos",
+  "profileFats": "Grasas",
+  "profileData": "DATOS",
+  "profileGender": "Género",
+  "profileLifestyle": "Estilo de vida",
+  "profileTraining": "Entrenamiento",
+  "profileMinutesPerWeek": "Minutos/semana",
+  "profileBmrFormula": "Fórmula BMR",
+  "profileEdit": "Editar perfil",
+  "profileEditDesc": "Peso, altura, grasa corporal, objetivo",
+  "profileStats": "Estadísticas y progreso",
+  "profileStatsDesc": "Resumen semanal, calorías y comidas",
+  "profileRecalc": "Recalcular macros",
+  "profileRecalcDesc": "Volver a calcular según tus datos actuales",
+
+  "diaryTitle": "Tu diario",
+  "diarySubtitle": "ALIMENTARIO",
+  "diaryToday": "HOY",
+  "diaryBackToToday": "VOLVER A HOY",
+  "diaryDayTotal": "TOTAL DEL DÍA",
+  "diarySummary": "RESUMEN DEL DÍA",
+  "diaryAdd": "Añadir",
+  "diaryAddSnack": "Comida agregada",
+  "@diaryEmptySlot": {
+    "placeholders": {
+      "catName": { "type": "String" }
+    }
+  },
+  "diaryEmptySlot": "Sin registrar. {catName} está mirando.",
+  "@diaryItemsDeducted": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "diaryItemsDeducted": "ÍTEMS DESCONTADOS: {count}",
+  "diaryMealTypeLabel": "TIPO DE COMIDA",
+  "diaryQuantityLabel": "CANTIDAD",
+  "diaryEditMeal": "Editar comida",
+  "diaryDeleteMeal": "Eliminar comida",
+  "diaryDeleteConfirm": "Eliminar",
+  "diaryEditSnackOk": "Comida actualizada",
+  "diaryEditSnackPartial": "Comida actualizada, pero no se pudo ajustar la despensa. Revísala.",
+  "diaryDeleteSnackOk": "Comida eliminada",
+  "diaryDeleteSnackPartial": "Comida eliminada, pero no se pudo devolver el producto a la despensa.",
+  "diarySave": "Guardar",
+  "diarySaving": "Guardando…",
+  "diaryTour1": "Tu diario",
+  "diaryTour1Msg": "Cambia de día con las flechas. Cada comida queda guardada en la fecha en que la registras.",
+  "diaryTour2": "Resumen del día",
+  "diaryTour2Msg": "Aquí viven tus kcal y macros acumuladas. La meta se toma de tu perfil.",
+  "diaryTour3": "Registrar comida",
+  "diaryTour3Msg": "Pulsa \"Añadir\" (o el +) para registrar una comida desde la despensa o con el escáner.",
+  "diaryFasting": "EN AYUNAS",
+  "diaryQuoteNothing": "Nada registrado hoy. ",
+  "@diaryQuoteMeals": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "diaryQuoteMeals": "{count} de 4 comidas. ",
+  "@diaryQuoteRemainingKcal": {
+    "placeholders": {
+      "kcal": { "type": "num" }
+    }
+  },
+  "diaryQuoteRemainingKcal": "Te faltan {kcal} kcal",
+  "@diaryQuoteRemainingPro": {
+    "placeholders": {
+      "pro": { "type": "num" }
+    }
+  },
+  "diaryQuoteRemainingPro": " y {pro} g de proteína",
+  "diaryQuoteMet": "Objetivo cumplido. ",
+  "diaryQuotePantryEmpty": "Tu despensa está vacía. ",
+  "@diaryQuotePantryNames": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "diaryQuotePantryNames": "Tienes {names} en la despensa. ",
+  "diaryQuoteEnd": "Lo digo por si acaso.",
+  "diaryWhatsEaten": "¿Qué comiste?",
+  "@diaryDeleteMealConfirm": {
+    "placeholders": {
+      "foodName": { "type": "String" }
+    }
+  },
+  "diaryDeleteMealConfirm": "¿Eliminar {foodName} del diario?",
+
+  "nlTitle": "Foto de la tabla nutricional",
+  "nlCamera": "Cámara",
+  "nlGallery": "Galería",
+  "nlDetectedText": "Texto detectado",
+  "nlSave": "Guardar en la despensa",
+  "nlPhotoHint": "Toma una foto de la tabla nutricional",
+  "nlName": "Nombre del producto",
+  "nlQuantity": "Cantidad en la despensa",
+  "nlTableUnit": "Unidad tabla",
+  "nlCalories": "Calorías",
+  "nlProteins": "Proteínas",
+  "nlCarbs": "Carbohidratos",
+  "nlFats": "Grasas",
+  "@nlConfidenceDetected": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "nlConfidenceDetected": "Detecté {percent}% de los macros. Revisa los valores antes de guardar.",
+  "nlToastName": "Dale un nombre al producto",
+  "nlToastGrams": "Cantidad en gramos inválida",
+  "nlToastOneMacro": "Necesito al menos un macro",
+  "@nlToastReadError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "nlToastReadError": "No pude leer la foto: {error}",
+  "nlToastUpload": "No pude subir la foto, pero guardé el producto",
+  "@nlToastSaved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "nlToastSaved": "\"{name}\" agregado a tu despensa",
+
+  "notifThemeHeader": "TEMA",
+  "notifThemeDark": "Oscuro",
+  "notifThemeLight": "Claro",
+  "settingsLanguageHeader": "IDIOMA",
+  "settingsLanguageSystem": "Sistema",
+  "settingsLanguageSpanish": "Español",
+  "settingsLanguageEnglish": "English",
+  "notifMealReminders": "RECORDATORIOS DE COMIDA",
+  "notifMealTimeHint": "Hora para registrar tu comida del día",
+  "notifBreakfast": "Desayuno",
+  "notifLunch": "Almuerzo",
+  "notifSnack": "Merienda",
+  "notifDinner": "Cena",
+  "notifSaving": "Guardando...",
+  "notifSaveSchedules": "Guardar horarios",
+  "notifErrorUpdateConfig": "No se pudo actualizar la configuración.",
+  "notifErrorSaveSchedules": "No se pudo guardar los horarios. Intenta de nuevo.",
+  "notifSavedNotActivated": "Horarios guardados · no se pudieron activar las notificaciones",
+  "notifSavedActivated": "Horarios guardados · notificaciones activadas",
+  "notifSmartHeader": "NOTIFICACIONES INTELIGENTES",
+  "notifSmartTitle": "Consejos contextuales del gato",
+  "notifSmartSubtitle": "El gato te avisa a horas clave: si vas bajo de kcal (18:00), si se rompió la racha (19:00), si un producto lleva días en la despensa (20:00) y tus logros de proteína (21:00).",
+  "notifTestNotification": "Probar notificación (Debug)",
+  "notifTestNotificationDesc": "Dispara una notificación con banner heads-up en 10 segundos",
+  "notifAbout": "Acerca de NekoFit",
+  "@notifVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "notifVersion": "Versión {version}",
+  "notifResetTours": "Reiniciar tutoriales",
+  "notifResetToursDesc": "Vuelve a mostrar los tours del gato (Despensa y Diario)",
+  "notifClose": "Cerrar",
+  "notifAboutTagline": "NekoFit · tu konbini personal de macros",
+  "notifLogout": "Cerrar sesión",
+  "notifLogoutDesc": "Vuelve al inicio de sesión",
+  "notifLogoutConfirmBody": "¿Seguro que quieres salir? Tu despensa y macros se quedan guardados en la nube.",
+  "notifLogoutConfirm": "Salir",
+  "notifTestSnackOk": "Notificación de prueba en 10s. Minimiza la app para ver el banner.",
+  "@notifTestSnackError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "notifTestSnackError": "Error al programar notificación de prueba: {error}",
+  "notifResetToursSnack": "Tutoriales reiniciados: Mochi te volverá a guiar.",
+
+  "wardrobeMood": "HUMOR",
+  "wardrobeFree": "Gratis",
+  "wardrobeLocked": "BLOQUEADO",
+  "wardrobeEquipped": "EQUIPADO",
+  "wardrobeInUse": "EN USO",
+  "wardrobeEquip": "EQUIPAR",
+  "wardrobeUnlockFree": "DESBLOQUEAR GRATIS",
+  "wardrobeNotYet": "TODAVÍA NO",
+  "wardrobeHint": "Toca y mantén para conocer la historia de cada prenda.",
+  "wardrobeInYourWardrobe": "✔ En tu armario",
+  "wardrobeUnlockFailed": "No pude desbloquearlo. Ni idea por qué.",
+  "wardrobeEquipLocked": "Primero desbloquéalo. No se puede usar lo que no tienes.",
+  "@wardrobeUnlockedSnack": {
+    "placeholders": {
+      "outfitName": { "type": "String" }
+    }
+  },
+  "wardrobeUnlockedSnack": "{outfitName} desbloqueado. No la presumas demasiado.",
+  "@wardrobeProgressStreak": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "value": { "type": "int" }
+    }
+  },
+  "wardrobeProgressStreak": "Racha {current}/{value} días",
+  "@wardrobeProgressLevel": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "wardrobeProgressLevel": "Nivel {current}/{total}",
+
+  "scanTitle": "ESCANEAR PRODUCTO",
+  "scanPrompt": "Apunta al código de barras del producto",
+  "scanWaiting": "Esperando código de barras...",
+  "scanSearching": "Buscando producto...",
+  "scanSearchButton": "Buscar",
+  "scanSearchByName": "Buscar por nombre",
+  "scanSearchProduct": "Buscar producto",
+  "scanSearchHint": "Ej: Quaker Avena Canela",
+  "scanNoMacrosData": "Sin datos de macros",
+  "@scanNoMacrosBody": {
+    "placeholders": {
+      "barcode": { "type": "String" }
+    }
+  },
+  "scanNoMacrosBody": "El código {barcode} no tiene datos suficientes. Búscalo por nombre.",
+  "scanLabelPhoto": "Foto de tabla",
+  "@scanCodeDetected": {
+    "placeholders": {
+      "barcode": { "type": "String" }
+    }
+  },
+  "scanCodeDetected": "Código: {barcode}",
+  "scanGramsSnack": "¿Cuántos gramos agregas a la despensa?",
+  "scanProductAdded": "Producto agregado a la despensa",
+  "scanPhotoCustom": "Foto personalizada lista",
+  "scanPhotoOff": "Foto de Open Food Facts",
+  "scanPhotoNone": "Sin foto disponible",
+  "scanMacrosPer100ml": "Macros por cada 100 ml",
+  "scanGramsHint": "Ej: 500",
+  "scanAddToPantry": "Agregar a Despensa",
+
+  "prodEditTitle": "Editar producto",
+  "prodUnit": "Unidad",
+  "prodCategory": "Categoría",
+  "prodPrice": "Precio (opcional)",
+  "prodSave": "Guardar cambios",
+  "prodCompareSimilar": "Comparar con similares",
+  "prodPhotoHint": "Agregar o cambiar foto del producto",
+  "prodUpdated": "Producto actualizado",
+  "prodDeleteTitle": "Eliminar producto",
+  "@prodDeleteConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "prodDeleteConfirm": "¿Seguro que quieres sacar a \"{name}\" de tu despensa?",
+  "@prodPhotoUploadError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "prodPhotoUploadError": "No pude subir la foto: {error}",
+  "@prodMacroField": {
+    "placeholders": {
+      "label": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "prodMacroField": "{label} (por 100{unit})",
+
+  "peditPetSection": "MASCOTA VIRTUAL",
+  "peditGoalSection": "OBJETIVO FITNESS",
+  "peditSavedSnack": "Perfil actualizado",
+  "peditMacrosTitle": "Tus macros diarios",
+  "peditActivityPesasHit": "Pesas (HIIT / alta intensidad)",
+  "peditActivityPesasModerado": "Pesas (ritmo moderado)",
+  "peditActivityCorrerModerado": "Correr (ritmo moderado)",
+  "peditActivityCorrerRapido": "Correr (ritmo rápido / intervalos)",
+  "peditActivityCaminar": "Caminar",
+  "peditActivityCiclismo": "Ciclismo",
+
+  "statsTitle": "Estadísticas",
+  "statsWeek": "Semana",
+  "statsMonth": "Mes",
+  "statsYear": "Año",
+  "statsError": "No se pudieron cargar tus estadísticas.",
+  "statsPeriodSummary": "Resumen del período",
+  "statsCalPerDay": "Cal/día",
+  "statsOnTargetDays": "Días on-target",
+  "@statsOnTargetUnit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "statsOnTargetUnit": "de {count}",
+  "statsCurrentStreak": "Racha actual",
+  "statsDays": "días",
+  "statsNoRecords": "Sin registros en este período — registra una comida para ver tu tendencia",
+  "@statsYearSummary": {
+    "placeholders": {
+      "days": { "type": "int" },
+      "goal": { "type": "int" }
+    }
+  },
+  "statsYearSummary": "{days} días con registros en el año · meta {goal} kcal",
+  "@statsPeriodSummaryDetail": {
+    "placeholders": {
+      "logged": { "type": "int" },
+      "total": { "type": "int" },
+      "goal": { "type": "int" }
+    }
+  },
+  "statsPeriodSummaryDetail": "{logged} de {total} días con registros · meta {goal} kcal",
+  "statsCaloriesWeek": "Calorías esta semana",
+  "statsCaloriesMonth": "Calorías este mes",
+  "statsCaloriesYear": "Calorías este año",
+  "statsGoal": "Meta",
+  "statsRecentMeals": "Comidas recientes",
+  "statsWeekdayMon": "Lun",
+  "statsWeekdayTue": "Mar",
+  "statsWeekdayWed": "Mié",
+  "statsWeekdayThu": "Jue",
+  "statsWeekdayFri": "Vie",
+  "statsWeekdaySat": "Sáb",
+  "statsWeekdaySun": "Dom",
+  "statsMonthJan": "Ene",
+  "statsMonthFeb": "Feb",
+  "statsMonthMar": "Mar",
+  "statsMonthApr": "Abr",
+  "statsMonthMay": "May",
+  "statsMonthJun": "Jun",
+  "statsMonthJul": "Jul",
+  "statsMonthAug": "Ago",
+  "statsMonthSep": "Sep",
+  "statsMonthOct": "Oct",
+  "statsMonthNov": "Nov",
+  "statsMonthDec": "Dic",
+
+  "searchHint": "Ej: pechuga, arroz, manzana...",
+  "searchEmptyNoProducts": "No encontré productos en la búsqueda.\n¿Es un alimento fresco?",
+  "searchAddManually": "Agregar manualmente",
+  "searchOrTakeLabelPhoto": "O tomar foto de la tabla",
+  "searchFreshSuggestions": "SUGERENCIAS DE FRESCOS",
+  "searchSupermarketProducts": "PRODUCTOS DE SUPERMERCADO",
+  "searchProduct": "Producto",
+  "@searchMacroKcal": {
+    "placeholders": {
+      "kcal": { "type": "num" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroKcal": "{kcal} kcal/100{unit}",
+  "@searchMacroProtein": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroProtein": "P: {value}g/100{unit}",
+  "@searchMacroCarbs": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroCarbs": "C: {value}g/100{unit}",
+  "@searchMacroFats": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "searchMacroFats": "G: {value}g/100{unit}",
+  "@searchFreshMacros": {
+    "placeholders": {
+      "calories": { "type": "num" },
+      "proteins": { "type": "String" },
+      "carbs": { "type": "String" },
+      "fats": { "type": "String" }
+    }
+  },
+  "searchFreshMacros": "{calories} kcal · P: {proteins}g · C: {carbs}g · G: {fats}g",
+  "searchPhotoReady": "Foto lista para guardar.",
+  "searchPhotoFetchOnSave": "Traeré la foto de Open Food Facts al guardar.",
+  "searchPhotoNoneAdd": "Sin foto. Toca el recuadro o usa los botones para añadir una.",
+  "searchAskName": "¿Cómo se llama este alimento?",
+  "@searchManualAdded": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "searchManualAdded": "{name} agregado a tu despensa",
+  "searchAddFreshFood": "Agregar alimento fresco",
+  "searchFoodName": "Nombre del alimento",
+  "searchFoodNameHint": "Ej: Pechuga de pollo, Banano, Arroz...",
+  "searchSearchingImage": "Buscando imagen...",
+  "searchImageFoundOff": "Imagen encontrada en Open Food Facts",
+  "searchUsingImageOff": "Usando imagen de Open Food Facts.",
+  "searchCategory": "CATEGORÍA",
+  "searchValuesPer100g": "VALORES POR 100g",
+  "searchQuantityAdd": "Cantidad a agregar a la despensa",
+
+  "planTitle": "Plan y despensa",
+  "planRegenerateTooltip": "Regenerar plan",
+  "planTabThisWeek": "Esta semana",
+  "planTabToBuy": "Para comprar",
+  "planGenerating": "Generando plan con tu gato…",
+  "planEmptyTitle": "Sin plan todavía",
+  "planEmptyMessage": "Pulsa el botón de refrescar para generar el plan con IA.",
+  "planWeekTitle": "Plan de la semana",
+  "@planAvgDaily": {
+    "placeholders": {
+      "avg": { "type": "String" },
+      "goal": { "type": "String" }
+    }
+  },
+  "planAvgDaily": "{avg} kcal/día · meta {goal}",
+  "@planWeekTotal": {
+    "placeholders": {
+      "days": { "type": "int" },
+      "total": { "type": "String" }
+    }
+  },
+  "planWeekTotal": "{days} días · {total} kcal en total",
+  "planShoppingLoading": "Cruzando despensa, plan y predicciones…",
+  "planListEmptyTitle": "Lista vacía",
+  "planListEmptyMessage": "Tu despensa está al día. Vuelve cuando algo se agote o se acerque.",
+  "planRecalculate": "Recalcular",
+  "planSmartList": "Lista inteligente",
+  "@planMealsDone": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "planMealsDone": "{done} / {total} hechas",
+  "planRegenerated": "¡Plan regenerado!",
+  "@planGenerateError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "planGenerateError": "No pude generar el plan: {error}",
+  "planMealDone": "Comida marcada como hecha.",
+  "planMealUndone": "Comida desmarcada.",
+  "planReasonDepleted": "AGOTADO",
+  "planReasonCritical": "CRÍTICO",
+  "planReasonPlan": "PLAN",
+  "planReasonManual": "MANUAL",
+  "planDayMon": "LUN",
+  "planDayTue": "MAR",
+  "planDayWed": "MIÉ",
+  "planDayThu": "JUE",
+  "planDayFri": "VIE",
+  "planDaySat": "SÁB",
+  "planDaySun": "DOM"
+}
