@@ -10,29 +10,41 @@ La identidad visual sigue la dirección **"Konbini 3AM × Neko-Gym"** (tienda de
 
 ## 🛠️ Stack Tecnológico
 
-* **Frontend:** Flutter & Dart (renderizado de alta tasa de refresco a 60/120 FPS).
-* **Mascota:** Widget de Flutter con animaciones controladas por código (`NekoCatMascot`), estados *Idle / Pensando / Éxito / Alerta* y overlays de outfits.
-* **Backend & Base de Datos:** Firebase — Firestore (NoSQL), Authentication (email + Google Sign-In), Cloud Storage (imágenes comprimidas), App Check e In-App Update.
-* **Procesamiento de IA:** Firebase AI (Gemini `3.5-flash`) para visión de platos, extracción de macros por voz/texto y chat de la mascota; ML Kit para OCR de tablas nutricionales (`google_mlkit_text_recognition`) y detección de objetos on-device (`google_mlkit_object_detection`).
+* **Frontend:** Flutter & Dart (renderizado de alta tasa de refresco a 60/120 FPS) con Riverpod para gestión de estado e inyección de dependencias.
+* **Mascota:** Widget de Flutter con animaciones controladas por código (`NekoCatMascot`), estados *Espera / Pensando / Éxito / Alerta* y overlays de outfits (gato/perro).
+* **Backend & Base de Datos:** Firebase — Firestore (NoSQL), Authentication (email + Google Sign-In), Cloud Storage (imágenes comprimidas), App Check e In-App Update; Cloud Functions.
+* **Procesamiento de IA:** Firebase AI (Gemini `3.5-flash`) para visión de platos, extracción de macros por voz/texto, chat de la mascota y **generación de planes semanales**; ML Kit para OCR de tablas nutricionales (`google_mlkit_text_recognition`) y detección de objetos on-device (`google_mlkit_object_detection`).
 * **Datos de producto:** Open Food Facts (mirror `es.openfoodfacts.org`) para códigos de barras y búsqueda por nombre.
 * **Salud y actividad:** Health Connect (Android) — pasos, distancia y calorías activas — vía el paquete `health`.
 * **Extras:** `speech_to_text` (registro por voz), `fl_chart` (estadísticas semanales), `flutter_local_notifications` (recordatorios de comidas), `table_calendar`, `camera`, `mobile_scanner`.
+* **Internacionalización:** `flutter gen-l10n` con plantillas ARB en español e inglés (`app_es.arb` / `app_en.arb`).
 
 ---
 
 ## 📲 Estado actual y navegación
 
-La app usa una **bottom navigation** con 5 secciones:
+El onboarding post-registro configura el contexto completo del usuario en **3 pasos**: *Lo esencial* (género, edad, altura, peso y objetivo), *Personaliza* (% grasa, estilo de vida, entrenamiento, mascota) y *Personalización extrema* (opcional). Tras esto, la app usa una **bottom navigation** con 5 secciones:
 
 ```
  🏠 Inicio  │  📦 Despensa  │  📅 Diario  │  🐱 Mascota  │  👤 Perfil
 ```
 
 1. **Inicio (`HomeDashboard`):** saludo hero, stats rápidas en grid 2×2, CTAs a las pantallas más usadas y un tip sarcástico del gato según su humor.
-2. **Despensa (`PantryScreen`):** inventario único con pestañas por macro (Proteínas / Carbohidratos / Grasas / Vegetales / Lácteos-Huevos), estados *En Existencia* / *Agotados* y reposición rápida.
-3. **Diario (`DiaryScreen`):** timeline de comidas del día (desayuno, almuerzo, merienda, cena, snack) con navegación de fechas y registro desde despensa, foto, voz o receta.
+2. **Despensa (`PantryScreen`):** inventario único con pestañas por macro (Proteínas / Carbohidratos / Grasas / Vegetales / Lácteos-Huevos), estados *En Existencia* / *Agotados* y reposición rápida. Incluye escáner de código de barras, buscador de frescos y plan de compras.
+3. **Diario (`DiaryScreen`):** timeline de comidas del día con navegación de fechas y registro desde despensa, foto, voz o receta; resumen de macros y metas.
 4. **Mascota (`PetScreen`):** hambre, humor, nivel y XP de la mascota, chat con la IA (persistente) y acceso al **vestidor** de outfits.
-5. **Perfil (`ProfileScreen`):** contexto biológico, metas de macros, edición de datos y configuración de recordatorios de comidas.
+5. **Perfil (`ProfileScreen`):** contexto biológico, metas de macros, edición, recordatorios de comidas, estadísticas y avisos de transición de fase del plan nutricional.
+
+### ⚡ Personalización extrema (planes nutricionales con contexto)
+
+NekoFit genera planes nutricionales con **plazo definido (4 / 8 / 12 semanas)** y contexto real del usuario:
+
+* **Fases:** *déficit* (perder peso), *mantenimiento*, *superávit* (ganar músculo) y *recomposición*.
+* **Calorías dinámicas:** el déficit/superávit escala según la duración (4 s → −500/+350 kcal · 8 s → −400/+300 · 12 s → −300/+250) con un suelo mínimo calórico de 1200 kcal.
+* **Ritmo diario:** 3, 4 o 5 comidas al día y **ayuno intermitente** opcional (16:8 / 18:6) — ambos dan forma al plan semanal IA.
+* **Contexto de salud y alimentos:** condiciones médicas (insulino-resistencia, hipertensión, hipotiroidismo…), preferencias/restricciones (vegana, keto, sin gluten…), alimentos *imprescindibles* y *aversiones* de todo lo cual se **inyecta en el prompt de Gemini** cada semana.
+* **Ciclo de vida:** al vencer el plan, el perfil muestra la **fase de transición recomendada** y solo recalcula macros cuando el usuario la **aprueba**.
+* **Persistencia:** subcolección `users/{uid}/plans/{id}`, protegida por las reglas de Firestore.
 
 ---
 
@@ -51,6 +63,8 @@ La app usa una **bottom navigation** con 5 secciones:
 | RF-7 | Registro de comidas por foto (IA): reconocimiento de plato + gramaje estimado + sliders de porciones. | ✅ Implementado |
 | RF-8 | Feedback dinámico de la IA: opinión macro-nutricional para productos nuevos y mensajes cortos para reposiciones. | ✅ Implementado (chat + mensajes híbridos) |
 | RF-9 | Estimador predictivo de agotamiento basado en el historial de consumo (30 días). | ✅ Implementado (servicio de estimación + crítico/aviso) |
+| RF-10 | Plan nutricional con plazo definido y contexto (fases, nº de comidas, ayuno, condiciones médicas y preferencias) que alimenta al plan semanal IA. | ✅ Implementado |
+| RF-11 | Internacionalización completo (ES/EN) de pantallas y flujos mediante `AppLocalizations`. | ✅ Implementado |
 
 ### Requerimientos No Funcionales (RNF)
 
@@ -59,6 +73,7 @@ La app usa una **bottom navigation** con 5 secciones:
 | RNF-1 | Rendimiento gráfico fluido (60 FPS) en animaciones de la mascota y transiciones. | ✅ Implementado |
 | RNF-2 | Imágenes <100KB comprimidas localmente y subidas a Storage; purga de imágenes del diario a los 30 días. | ✅ Implementado (compresión en bucle vía `flutter_image_compress`) |
 | RNF-3 | Operaciones de estado atómicas y sin duplicación en Firestore (update/transaction). | ✅ Implementado |
+| RNF-4 | Suite de pruebas automatizadas (modelos, providers y cálculo de macros/planes) ejecutada con `flutter test`. | ✅ Implementado |
 
 ---
 
@@ -105,7 +120,7 @@ El proyecto se divide en **4 Sprints** de dos semanas cada uno, enfocados en con
     * [x] **Recetario rápido:** construir una comida a partir de varios ingredientes de la despensa.
     * [x] Alimentar a la mascota y actualizar la racha (streak) al guardar comidas.
 
-### Sprint 4: Personalidad de la Mascota IA, Lógica Híbrida de Opinión y Lanzamiento (Semanas 7-8) 🔄 En curso
+### Sprint 4: Personalidad de la Mascota IA, Lógica Híbrida de Opinión y Lanzamiento (Semanas 7-8) ✅ Completado
 * **Objetivo:** Darle "vida" a la aplicación mediante animaciones, gamificación y reglas de predicción.
 * **Tareas (Backlog):**
     * [x] Widget de mascota animada (`NekoCatMascot`) con 4 estados (*Espera, Pensando, Éxito, Alerta*), sistema de outfits y variantes gato/perro.
@@ -116,12 +131,51 @@ El proyecto se divide en **4 Sprints** de dos semanas cada uno, enfocados en con
     * [x] Integración con **Health Connect** (pasos, distancia y calorías activas) y sección de pasos en el dashboard.
     * [x] **Estadísticas semanales** con `fl_chart` (calorías, macros y comidas recientes vs. metas).
     * [x] **Recordatorios de comidas** con notificaciones locales configurables desde el perfil.
-    * [ ] *Pendiente:* sonidos y pulido final de animaciones de la mascota en las 4 pantallas.
+
+### 💎 Personalización Extrema (Planes Nutricionales Contextuales) ✅ Completado
+* **Objetivo:** llevar la planificación nutricional más allá de metas estáticas, con planos con plazo, ritmo y contexto reales integrados con el plan semanal IA.
+* **Tareas (Backlog):**
+    * [x] Modelo `NutritionPlan` (fases `cut`/`maintenance`/`lean_gain`/`recomposition`), `MealSchedule` (3/4/5 comidas + ayuno) y `NutritionContext` (condiciones médicas, preferencias/restricciones, imprescindibles y aversiones).
+    * [x] Ajuste calórico escalado por duración (4/8/12 semanas) con suelo mínimo de 1200 kcal en `CalorieCalculator`.
+    * [x] Servicio `NutritionPlanService` con persistencia en `users/{uid}/plans/{id}` y cálculo de macros desde el TDEE + fase.
+    * [x] Integración del contexto en el prompt de Gemini del `WeeklyPlanService` (nº de comidas, ventana de ayuno, condiciones, aversiones e imprescindibles) + fallback determinístico con ritmo/ayuno.
+    * [x] **Paso 3 opcional** en el onboarding (`ProfileSetupScreen`) y aviso de **transición de fase** con aprobación del usuario en el perfil.
+    * [x] Regla `plans` en `firestore.rules` y claves i18n (ES/EN) para todos los flujos nuevos.
+    * [x] Suite de pruebas para modelos, `caloricAdjustment`, `mealPartitioning` y `feedingWindowSlots`.
 
 ---
 
 ## 🔒 Seguridad y Reglas
 
-* **Firestore:** cada usuario solo puede leer/escribir su propio documento y subcolecciones (`request.auth.uid == userId`) — ver [`firestore.rules`](./firestore.rules).
+* **Firestore:** cada usuario solo puede leer/escribir su propio documento y subcolecciones (`request.auth.uid == userId`), incluidas `meals`, `pantry`, `recipes`, `chat_history`, `plans` y `pet` — ver [`firestore.rules`](./firestore.rules). Las subcolecciones sensibles exigen perfil completo (`isProfileComplete()`).
 * **App Check** activado para proteger las llamadas a Firebase.
 * **Firebase AI** (Gemini) se consume mediante la capa `firebase_ai` (claves administradas por Firebase).
+* **Archivos sensibles excluidos del repo:** `android/app/google-services.json` y keystores de firma no se suben; regenera `google-services.json` desde Firebase Console para compilar Android en otra máquina.
+
+---
+
+## 🚀 Comenzar / Ejecutar
+
+```bash
+# 1. Dependencias
+flutter pub get
+
+# 2. Generar localizaciones (fuente ARB en lib/l10n)
+flutter gen-l10n
+
+# 3. Configurar Firebase (Auth, Firestore, Storage, App Check, AI)
+#    - Coloca android/app/google-services.json (regenerable desde Firebase Console)
+#    - Ajusta cualquier archivo de configuración de iOS si corresponde
+
+# 4. Verificación de calidad
+flutter analyze        # debe reportar 0 issues
+flutter test           # suite de pruebas (modelos, providers, Cálculos y planes)
+
+# 5. Ejecutar
+flutter run
+```
+
+Las reglas de Firestore se despliegan con:
+```bash
+firebase deploy --only firestore:rules
+```
