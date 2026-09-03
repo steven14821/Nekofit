@@ -193,6 +193,8 @@
   },
   "planTransitError": "No se pudo aplicar la fase: {error}",
   "saveAndStart": "Guardar y empezar",
+  "savePlanButton": "Guardar plan",
+  "deletePlanButton": "Eliminar plan",
   "back": "Atrás",
   "snackEssentials": "Completa edad, altura y peso para calcular tu meta al instante.",
   "snackCustomGoal": "Por favor describe tu objetivo fitness personalizado.",
@@ -256,6 +258,19 @@
   "homeRestock": "Reabastecer",
   "homeRestockHint": "DESDE AGOTADOS",
   "homeWeeklyProgress": "Ver progreso semanal",
+  "homePlanTitle": "Mi plan nutricional",
+  "homePlanEmptyTitle": "Crea tu plan nutricional",
+  "homePlanEditHint": "Toca para editar tu fase, plazo y comidas. También puedes volver al ritmo clásico.",
+  "homePlanEmptyHint": "Personalización extrema: fase, duración y hábitos. Afecta tus macros y tu plan semanal.",
+  "planCardProgress": "{daysLeft} / {totalDays} días",
+  "@planCardProgress": {
+    "placeholders": {
+      "daysLeft": {"type": "int"},
+      "totalDays": {"type": "int"}
+    }
+  },
+  "planCardWeeks": "semanas",
+  "planSavedNotice": "Plan guardado",
   "@ticketNote": {
     "placeholders": {
       "catName": { "type": "String" }

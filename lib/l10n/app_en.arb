@@ -170,6 +170,8 @@
   },
   "planTransitError": "Could not apply the phase: {error}",
   "saveAndStart": "Save and start",
+  "savePlanButton": "Save plan",
+  "deletePlanButton": "Delete plan",
   "back": "Back",
   "snackEssentials": "Complete age, height and weight to estimate your goal instantly.",
   "snackCustomGoal": "Please describe your custom fitness goal.",
@@ -228,6 +230,19 @@
   "homeRestock": "Restock",
   "homeRestockHint": "FROM DEPLETED",
   "homeWeeklyProgress": "View weekly progress",
+  "homePlanTitle": "My nutrition plan",
+  "homePlanEmptyTitle": "Create your nutrition plan",
+  "homePlanEditHint": "Tap to edit your phase, duration and meals. You can also return to the classic rhythm.",
+  "homePlanEmptyHint": "Extreme personalization: phase, duration and habits. It affects your macros and weekly plan.",
+  "planCardProgress": "{daysLeft} / {totalDays} days",
+  "@planCardProgress": {
+    "placeholders": {
+      "daysLeft": {"type": "int"},
+      "totalDays": {"type": "int"}
+    }
+  },
+  "planCardWeeks": "weeks",
+  "planSavedNotice": "Plan saved",
   "@ticketNote": {
     "placeholders": {
       "catName": { "type": "String" }

@@ -9,6 +9,7 @@ import '../core/theme.dart';
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../models/pet_state.dart';
+import '../models/nutrition_plan.dart';
 import '../services/firebase_service.dart';
 import '../services/health_connect_service.dart';
 import '../widgets/neko_cat_mascot.dart';
@@ -16,6 +17,7 @@ import '../widgets/amber_atmosphere.dart';
 import '../widgets/streak_flame_badge.dart';
 import 'food_scanner_screen.dart';
 import 'pantry_screen.dart';
+import 'plan_editor_screen.dart';
 import 'stats_screen.dart';
 
 /// Pantalla resumen — réplica del diseño HTML "Noche Ámbar".
@@ -75,6 +77,10 @@ class _HomeDashboardState extends ConsumerState<HomeDashboard> {
 
                   // ── 3. Stats rápidas 2×2 ──
                   _StatsSection(uid: uid),
+                  const SizedBox(height: 18),
+
+                  // ── 3.5 Plan nutricional (crear / editar) ──
+                  _PlanCard(uid: uid),
                   const SizedBox(height: 18),
 
                   // ── 4. CTAs ──
@@ -903,6 +909,213 @@ class _StepsStatState extends ConsumerState<_StepsStat> {
       ],
     );
   }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// 3.5. Plan nutricional — muestra el plan activo y permite crearlo/editarlo
+// ═════════════════════════════════════════════════════════════════════════════
+class _PlanCard extends ConsumerWidget {
+  final String uid;
+  const _PlanCard({required this.uid});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final nk = context.nk;
+    final l10n = AppLocalizations.of(context);
+    final db = ref.read(firebaseServiceProvider).db;
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: db
+          .collection('users')
+          .doc(uid)
+          .collection('plans')
+          .orderBy('createdAt', descending: true)
+          .limit(1)
+          .snapshots(),
+      builder: (context, snap) {
+        final docs = snap.data?.docs ?? [];
+        final hasPlan = docs.isNotEmpty;
+        final data = hasPlan
+            ? docs.first.data() as Map<String, dynamic>
+            : null;
+        final phaseName =
+            (data?['phase'] as String?) ?? PlanPhase.cut.storageName;
+        final phaseLabel = _phaseLabel(l10n, phaseName);
+        final duration =
+            (data?['durationWeeks'] as num?)?.toInt() ?? 8;
+
+        DateTime? startDate;
+        if (data?['startDate'] is Timestamp) {
+          startDate = (data!['startDate'] as Timestamp).toDate();
+        } else if (data?['createdAt'] is Timestamp) {
+          startDate = (data!['createdAt'] as Timestamp).toDate();
+        }
+
+        String? progressLabel;
+        if (startDate != null) {
+          final totalDays = duration * 7;
+          final elapsed = DateTime.now()
+              .difference(startDate)
+              .inDays
+              .clamp(0, totalDays)
+              .toInt();
+          progressLabel = l10n.planCardProgress(totalDays - elapsed, totalDays);
+        }
+
+        return GestureDetector(
+          onTap: () => _openEditor(context),
+          child: Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              gradient: nk.mode == NekoThemeMode.dark
+                  ? LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        nk.amber.withValues(alpha: 0.14),
+                        Colors.transparent,
+                      ],
+                    )
+                  : null,
+              color: nk.cardBg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: nk.amber.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      hasPlan
+                          ? Icons.restaurant_menu_rounded
+                          : Icons.add_circle_outline,
+                      size: 20,
+                      color: nk.amber,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        hasPlan
+                            ? l10n.homePlanTitle
+                            : l10n.homePlanEmptyTitle,
+                        style: _display(size: 16, color: nk.text),
+                      ),
+                    ),
+                    Icon(
+                      Icons.chevron_right,
+                      size: 20,
+                      color: nk.textFaint,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                if (hasPlan) ...[
+                  Row(
+                    children: [
+                      _planBadge(phaseLabel, nk.amber, nk),
+                      const SizedBox(width: 8),
+                      Text(
+                        '$duration ${l10n.planCardWeeks}',
+                        style: _mono(size: 11, color: nk.textFaint),
+                      ),
+                    ],
+                  ),
+                  if (progressLabel != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      progressLabel.toUpperCase(),
+                      style: _mono(size: 10, color: nk.textFaint),
+                    ),
+                  ],
+                  const SizedBox(height: 10),
+                  Text(
+                    l10n.homePlanEditHint,
+                    style: _body(size: 12, color: nk.textDim),
+                  ),
+                ] else
+                  Text(
+                    l10n.homePlanEmptyHint,
+                    style: _body(size: 12, color: nk.textDim),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _openEditor(BuildContext context) async {
+    final saved = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => const PlanEditorScreen()),
+    );
+    if (saved == true && context.mounted) {
+      final nk = context.nk;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: nk.amber,
+          content: Text(
+            AppLocalizations.of(context).planSavedNotice,
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _planBadge(String label, Color color, NekoColors nk) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label.toUpperCase(),
+        style: _mono(size: 10, weight: FontWeight.w700, color: nk.amber),
+      ),
+    );
+  }
+
+  String _phaseLabel(AppLocalizations l10n, String phase) {
+    switch (phase) {
+      case 'maintenance':
+        return l10n.extremePhaseMaintain;
+      case 'lean_gain':
+        return l10n.extremePhaseGain;
+      case 'recomposition':
+        return l10n.extremePhaseRecomp;
+      default:
+        return l10n.extremePhaseCut;
+    }
+  }
+
+  TextStyle _display({
+    double size = 14,
+    FontWeight weight = FontWeight.w700,
+    Color color = const Color(0xFFF4EFE6),
+  }) => GoogleFonts.spaceGrotesk(
+    fontSize: size,
+    fontWeight: weight,
+    color: color,
+  );
+
+  TextStyle _mono({
+    double size = 11,
+    FontWeight weight = FontWeight.w500,
+    Color color = const Color(0xFF6B6459),
+  }) => GoogleFonts.jetBrainsMono(
+    fontSize: size,
+    fontWeight: weight,
+    color: color,
+  );
+
+  TextStyle _body({double size = 12, Color color = const Color(0xFF6B6459)}) =>
+      GoogleFonts.dmSans(fontSize: size, color: color);
 }
 
 // ═════════════════════════════════════════════════════════════════════════════

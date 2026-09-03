@@ -511,6 +511,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get saveAndStart => 'Guardar y empezar';
 
   @override
+  String get savePlanButton => 'Guardar plan';
+
+  @override
+  String get deletePlanButton => 'Eliminar plan';
+
+  @override
   String get back => 'Atrás';
 
   @override
@@ -680,6 +686,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeWeeklyProgress => 'Ver progreso semanal';
+
+  @override
+  String get homePlanTitle => 'Mi plan nutricional';
+
+  @override
+  String get homePlanEmptyTitle => 'Crea tu plan nutricional';
+
+  @override
+  String get homePlanEditHint =>
+      'Toca para editar tu fase, plazo y comidas. También puedes volver al ritmo clásico.';
+
+  @override
+  String get homePlanEmptyHint =>
+      'Personalización extrema: fase, duración y hábitos. Afecta tus macros y tu plan semanal.';
+
+  @override
+  String planCardProgress(int daysLeft, int totalDays) {
+    return '$daysLeft / $totalDays días';
+  }
+
+  @override
+  String get planCardWeeks => 'semanas';
+
+  @override
+  String get planSavedNotice => 'Plan guardado';
 
   @override
   String ticketNote(String catName) {

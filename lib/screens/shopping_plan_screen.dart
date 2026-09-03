@@ -11,6 +11,7 @@ import '../models/user_context.dart';
 import '../models/weekly_plan.dart';
 import '../services/firebase_service.dart';
 import '../services/inventory_estimator_service.dart';
+import '../services/nutrition_plan_service.dart';
 import '../services/shopping_list_service.dart';
 import '../services/weekly_plan_service.dart';
 import '../widgets/amber_atmosphere.dart';
@@ -115,11 +116,14 @@ class _ShoppingPlanScreenState extends ConsumerState<ShoppingPlanScreen>
     if (uid == null || _user == null) return;
     setState(() => _loadingPlan = true);
     try {
+      final activePlan =
+          await NutritionPlanService.instance.activePlan(uid);
       final plan = await _planService.getPlan(
         uid: uid,
         user: _user!,
         pantry: _pantry,
         forceRegenerate: force,
+        plan: activePlan,
       );
       if (!mounted) return;
       setState(() {

@@ -80,6 +80,74 @@ class NutritionPlanService {
     return ref.id;
   }
 
+  /// Crea un plan nuevo o actualiza el activo (mismo [planId]) y, en ambos
+  /// casos, recalcula y persiste los macros del usuario según la fase.
+  /// Reinicia el período del plan al guardar la edición.
+  Future<void> saveOrUpdatePlan({
+    required String uid,
+    required UserContext user,
+    required PlanPhase phase,
+    required int durationWeeks,
+    required MealSchedule schedule,
+    NutritionContext context = const NutritionContext(),
+    String? planId,
+  }) async {
+    final start = DateTime.now();
+    final plan = NutritionPlan(
+      id: planId,
+      phase: phase,
+      durationWeeks: durationWeeks,
+      startDate: start,
+      endDate: start.add(Duration(days: 7 * durationWeeks)),
+      schedule: schedule,
+      context: context,
+      createdAt: DateTime.now(),
+    );
+
+    final ref = FirebaseService.instance.db
+        .collection('users')
+        .doc(uid)
+        .collection('plans');
+    if (planId != null) {
+      await ref.doc(planId).set(plan.toMap(), SetOptions(merge: true));
+    } else {
+      await ref.add(plan.toMap());
+    }
+
+    // Recalcular y guardar macros de acuerdo a la nueva fase.
+    final target = computeTarget(user: user, plan: plan);
+    await FirebaseService.instance.db.collection('users').doc(uid).set(
+      {
+        'fitnessGoal': _goalForPhase(phase),
+        'macroGoals': target.toMacroGoals(),
+        'bmrFormula': user.bmrFormula,
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  /// Elimina el plan activo (el usuario vuelve al flujo clásico). Opcionalmente
+  /// restaura los macros legacy recalculando sin plan.
+  Future<void> clearPlan({required String uid, required UserContext user}) async {
+    final snap = await FirebaseService.instance.db
+        .collection('users')
+        .doc(uid)
+        .collection('plans')
+        .get();
+    for (final doc in snap.docs) {
+      await doc.reference.delete();
+    }
+    final target = computeTarget(user: user, plan: null);
+    await FirebaseService.instance.db.collection('users').doc(uid).set(
+      {
+        'fitnessGoal': user.fitnessGoal,
+        'macroGoals': target.toMacroGoals(),
+        'bmrFormula': user.bmrFormula,
+      },
+      SetOptions(merge: true),
+    );
+  }
+
   /// Aplica la fase del plan a las métricas del usuario para obtener la meta
   /// de calorías y macronutrientes. Si [plan] es nulo calcula con el objetivo
   /// legacy (`fitnessGoal` + ajustes fijos -400/+300).

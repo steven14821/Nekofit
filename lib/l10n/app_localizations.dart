@@ -1016,6 +1016,18 @@ abstract class AppLocalizations {
   /// **'Guardar y empezar'**
   String get saveAndStart;
 
+  /// No description provided for @savePlanButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar plan'**
+  String get savePlanButton;
+
+  /// No description provided for @deletePlanButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar plan'**
+  String get deletePlanButton;
+
   /// No description provided for @back.
   ///
   /// In es, this message translates to:
@@ -1321,6 +1333,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver progreso semanal'**
   String get homeWeeklyProgress;
+
+  /// No description provided for @homePlanTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi plan nutricional'**
+  String get homePlanTitle;
+
+  /// No description provided for @homePlanEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu plan nutricional'**
+  String get homePlanEmptyTitle;
+
+  /// No description provided for @homePlanEditHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para editar tu fase, plazo y comidas. También puedes volver al ritmo clásico.'**
+  String get homePlanEditHint;
+
+  /// No description provided for @homePlanEmptyHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Personalización extrema: fase, duración y hábitos. Afecta tus macros y tu plan semanal.'**
+  String get homePlanEmptyHint;
+
+  /// No description provided for @planCardProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'{daysLeft} / {totalDays} días'**
+  String planCardProgress(int daysLeft, int totalDays);
+
+  /// No description provided for @planCardWeeks.
+  ///
+  /// In es, this message translates to:
+  /// **'semanas'**
+  String get planCardWeeks;
+
+  /// No description provided for @planSavedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan guardado'**
+  String get planSavedNotice;
 
   /// No description provided for @ticketNote.
   ///

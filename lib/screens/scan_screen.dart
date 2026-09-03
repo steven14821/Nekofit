@@ -9,7 +9,6 @@ import '../services/open_food_facts_service.dart';
 import '../services/image_service.dart';
 import '../core/providers.dart';
 import '../core/theme.dart';
-import '../core/neko_palette.dart';
 import '../core/haptics.dart';
 import '../core/category_inference.dart';
 import '../l10n/app_localizations.dart';
