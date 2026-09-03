@@ -56,6 +56,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   List<_DayStats> _weekData = [];
   List<_DayStats> _prevData = [];
   List<MealEntry> _meals = [];
+  List<MealEntry> _prevMeals = [];
   List<MealEntry> _streakMeals = [];
   Map<String, dynamic>? _goals;
   bool _loading = true;
@@ -112,6 +113,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
             .toList();
         setState(() {
           _meals = current;
+          _prevMeals = previous;
           _weekData = _aggregate(current, now, l10n);
           _prevData = _aggregate(previous, boundary, l10n);
           _loading = false;
@@ -385,6 +387,203 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     );
   }
 
+  /// Muestra un resumen semanal profesional cuando se toca una barra en la
+  /// vista de mes (cada barra es una semana calendario).
+  void _showWeeklySummary(_DayStats week) {
+    final nk = context.nk;
+    final l10n = AppLocalizations.of(context);
+    final weekStart = week.date;
+    final weekEnd = weekStart.add(const Duration(days: 6));
+    final today = DateTime.now();
+    final isCurrentWeek = !today.isBefore(weekStart) && !today.isAfter(weekEnd);
+
+    // Días con registros dentro de la semana (a nivel de día, no de bucket).
+    final inWeek = _meals.where((m) {
+      final d = m.createdAt.toLocal();
+      return !d.isBefore(weekStart) && d.isBefore(weekEnd.add(const Duration(days: 1)));
+    }).toList();
+    final daysWithMeals = inWeek
+        .map((m) => DateFormat('yyyy-MM-dd').format(m.createdAt.toLocal()))
+        .toSet()
+        .length;
+
+    final avgCal = daysWithMeals > 0 ? week.calories / daysWithMeals : 0.0;
+    final avgProt = daysWithMeals > 0 ? week.proteins / daysWithMeals : 0.0;
+    final avgCarbs = daysWithMeals > 0 ? week.carbs / daysWithMeals : 0.0;
+    final avgFats = daysWithMeals > 0 ? week.fats / daysWithMeals : 0.0;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.75,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (ctx, scrollController) => Container(
+          decoration: BoxDecoration(
+            color: nk.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: ListView(
+            controller: scrollController,
+            padding: const EdgeInsets.all(24),
+            children: [
+              // Handle
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: nk.textFaint.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: nk.amber.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.calendar_view_week_rounded,
+                      color: nk.amber,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${weekStart.day} ${_monthLabel(l10n, weekStart)} – '
+                          '${weekEnd.day} ${_monthLabel(l10n, weekEnd)}',
+                          style: TextStyle(
+                            fontFamily: AppFonts.sans,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: nk.text,
+                          ),
+                        ),
+                        Text(
+                          isCurrentWeek ? 'Semana actual' : 'Semana anterior',
+                          style: TextStyle(
+                            fontFamily: AppFonts.mono,
+                            fontSize: 11,
+                            color: nk.textFaint,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Total de la semana
+              _buildMonthStatCard(
+                nk: nk,
+                icon: Icons.local_fire_department_rounded,
+                iconColor: nk.amber,
+                label: 'CALORÍAS DE LA SEMANA',
+                value: '${week.calories.round()}',
+                unit: 'kcal',
+                subtitle: 'Promedio: ${avgCal.round()} kcal/día',
+              ),
+              const SizedBox(height: 12),
+
+              // Macros
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildMonthMacroCard(
+                        nk, 'PROTEÍNA', '${week.proteins.round()}g', avgProt, nk.protein),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildMonthMacroCard(
+                        nk, 'CARBOS', '${week.carbs.round()}g', avgCarbs, nk.carbs),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildMonthMacroCard(
+                        nk, 'GRASAS', '${week.fats.round()}g', avgFats, nk.fat),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Resumen
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: nk.surfaceHigh.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'RESUMEN',
+                      style: TextStyle(
+                        fontFamily: AppFonts.mono,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: nk.textFaint,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildSummaryRow(nk, 'Total comidas', week.mealCount.toString()),
+                    _buildSummaryRow(nk, 'Días con datos', '$daysWithMeals de 7'),
+                    _buildSummaryRow(
+                      nk,
+                      'Promedio comidas/día',
+                      '${(week.mealCount / math.max(1, daysWithMeals)).toStringAsFixed(1)}',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Botón ver diario
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    _openDiaryFor(weekStart);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: nk.amber,
+                    foregroundColor: nk.mode == NekoThemeMode.dark
+                        ? const Color(0xFF1A1206)
+                        : Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Ver en Diario',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildMonthStatCard({
     required NekoColors nk,
     required IconData icon,
@@ -486,49 +685,82 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
           .toList();
       _weekData = _aggregate(current, now, l10n);
       _prevData = _aggregate(previous, boundary, l10n);
+      _prevMeals = previous;
     });
     _subscribe();
   }
 
-  /// Agrupa las comidas por día (semana/mes) o por mes (año), siempre
-  /// completando los buckets vacíos del período para que la gráfica
-  /// muestre el rango completo.
+  /// Agrupa las comidas por día (semana), por semana calendario (mes) o por
+  /// mes (año), siempre completando los buckets vacíos del período para que
+  /// la gráfica muestre el rango completo.
   List<_DayStats> _aggregate(List<MealEntry> meals, DateTime now, AppLocalizations l10n) {
     final isYear = _range == RangeOption.year;
-    final dateKey = isYear ? 'yyyy-MM' : 'yyyy-MM-dd';
+    final isMonth = _range == RangeOption.month;
     final buckets = <String, _DayStats>{};
 
-    for (int i = _range.bucketCount - 1; i >= 0; i--) {
-      final DateTime date;
-      if (isYear) {
-        date = DateTime(now.year, now.month - i);
-      } else {
-        date = now.subtract(Duration(days: i));
+    if (isYear) {
+      // Buckets por mes.
+      for (int i = _range.bucketCount - 1; i >= 0; i--) {
+        final date = DateTime(now.year, now.month - i);
+        final key = DateFormat('yyyy-MM').format(date);
+        buckets[key] = _DayStats(
+          date: date,
+          label: _monthLabel(l10n, date).toUpperCase(),
+        );
       }
-      final key = DateFormat(dateKey).format(date);
-      final label = isYear
-          ? _monthLabel(l10n, date).toUpperCase()
-          : (_range == RangeOption.month
-                ? '${date.day}'
-                : _weekdayLabel(l10n, date).toUpperCase());
-      buckets[key] = _DayStats(date: date, label: label);
-    }
-
-    for (final meal in meals) {
-      // toLocal(): el Timestamp de Firestore llega en UTC y los buckets
-      // se construyen con fechas locales del dispositivo.
-      final key = DateFormat(dateKey).format(meal.createdAt.toLocal());
-      final b = buckets[key];
-      if (b != null) {
-        b.calories += meal.calories;
-        b.proteins += meal.proteins;
-        b.carbs += meal.carbs;
-        b.fats += meal.fats;
-        b.mealCount++;
+      for (final meal in meals) {
+        final key = DateFormat('yyyy-MM').format(meal.createdAt.toLocal());
+        final b = buckets[key];
+        if (b != null) _addToBucket(b, meal);
+      }
+    } else if (isMonth) {
+      // Buckets por semana calendario (lunes a domingo) dentro de la ventana.
+      final start = now.subtract(Duration(days: _range.bucketCount - 1));
+      for (var day = start;
+          !day.isAfter(now);
+          day = day.add(const Duration(days: 1))) {
+        final weekStart = day.subtract(Duration(days: day.weekday - 1));
+        final key = DateFormat('yyyy-MM-dd').format(weekStart);
+        if (buckets.containsKey(key)) continue;
+        final weekEnd = weekStart.add(const Duration(days: 6));
+        buckets[key] = _DayStats(
+          date: weekStart,
+          label: '${weekStart.day}–${weekEnd.day}',
+        );
+      }
+      for (final meal in meals) {
+        final local = meal.createdAt.toLocal();
+        final weekStart = local.subtract(Duration(days: local.weekday - 1));
+        final key = DateFormat('yyyy-MM-dd').format(weekStart);
+        final b = buckets[key];
+        if (b != null) _addToBucket(b, meal);
+      }
+    } else {
+      // Buckets diarios (semana).
+      for (int i = _range.bucketCount - 1; i >= 0; i--) {
+        final date = now.subtract(Duration(days: i));
+        final key = DateFormat('yyyy-MM-dd').format(date);
+        buckets[key] = _DayStats(
+          date: date,
+          label: _weekdayLabel(l10n, date).toUpperCase(),
+        );
+      }
+      for (final meal in meals) {
+        final key = DateFormat('yyyy-MM-dd').format(meal.createdAt.toLocal());
+        final b = buckets[key];
+        if (b != null) _addToBucket(b, meal);
       }
     }
 
     return buckets.values.toList();
+  }
+
+  void _addToBucket(_DayStats b, MealEntry meal) {
+    b.calories += meal.calories;
+    b.proteins += meal.proteins;
+    b.carbs += meal.carbs;
+    b.fats += meal.fats;
+    b.mealCount++;
   }
 
   String _monthLabel(AppLocalizations l10n, DateTime date) {
@@ -759,8 +991,12 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
 
     // Promedio solo sobre los días que realmente tienen registros:
     // dividir entre el total de días del período inflaría el promedio
-    // cuando el usuario no ha logueado todos los días.
-    final loggedDays = _weekData.where((d) => d.mealCount > 0).length;
+    // cuando el usuario no ha logueado todos los días. Se cuenta a nivel
+    // de día (no de bucket) porque el mes se agrupa por semanas.
+    final loggedDays = _meals
+        .map((m) => DateFormat('yyyy-MM-dd').format(m.createdAt.toLocal()))
+        .toSet()
+        .length;
     final avgCal = loggedDays > 0 ? totalCal / loggedDays : 0.0;
 
     // Período anterior (misma longitud) para las comparativas ▲/▼.
@@ -768,7 +1004,10 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     final prevTotalProt = _prevData.fold(0.0, (s, d) => s + d.proteins);
     final prevTotalCarbs = _prevData.fold(0.0, (s, d) => s + d.carbs);
     final prevTotalFats = _prevData.fold(0.0, (s, d) => s + d.fats);
-    final prevLoggedDays = _prevData.where((d) => d.mealCount > 0).length;
+    final prevLoggedDays = _prevMeals
+        .map((m) => DateFormat('yyyy-MM-dd').format(m.createdAt.toLocal()))
+        .toSet()
+        .length;
     final prevAvgCal = prevLoggedDays > 0 ? prevTotalCal / prevLoggedDays : 0.0;
 
     // Meta y racha.
@@ -858,7 +1097,9 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               : _range == RangeOption.year
               ? l10n.statsYearSummary(loggedDays, calGoal.toInt())
               : l10n.statsPeriodSummaryDetail(
-                  loggedDays, _weekData.length, calGoal.toInt()),
+                  loggedDays,
+                  _range == RangeOption.month ? 30 : _weekData.length,
+                  calGoal.toInt()),
           style: TextStyle(color: nk.textDim, fontSize: 11.5),
         ),
       ],
@@ -1062,23 +1303,25 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     final l10n = AppLocalizations.of(context);
     final calGoal = ((_goals?['calories'] as num?) ?? 2000.0).toDouble();
 
-    // La meta diaria solo tiene sentido en barras diarias (semana/mes);
-    // en el año las barras son totales mensuales.
+    // La meta solo tiene sentido contra barras de la misma escala: diaria
+    // en semana, semanal en mes. En el año las barras son totales mensuales.
     final showGoal = _range != RangeOption.year;
+    final goalRef = _range == RangeOption.month ? calGoal * 7 : calGoal;
     final maxData = _weekData.fold<double>(
       0,
       (m, d) => d.calories > m ? d.calories : m,
     );
     final maxY = showGoal
-        ? (maxData > calGoal ? maxData : calGoal) * 1.25
+        ? (maxData > goalRef ? maxData : goalRef) * 1.25
         : (maxData > 0 ? maxData * 1.2 : 100.0);
     final leftInterval = _niceStep(maxY);
     final barWidth = switch (_range) {
       RangeOption.week => 20.0,
-      RangeOption.month => 7.0,
+      RangeOption.month => 26.0,
       RangeOption.year => 26.0,
     };
-    final bottomStep = _range == RangeOption.month ? 5 : 1;
+    // En el mes las barras ya son semanas (4-5), así que se etiquetan todas.
+    final bottomStep = 1;
 
     final title = switch (_range) {
       RangeOption.week => l10n.statsCaloriesWeek,
@@ -1113,7 +1356,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               barTouchData: BarTouchData(
                 touchCallback: (event, response) {
                   // Tap corto en una barra → abre el diario en esa fecha.
-                  // En vista de año, muestra resumen mensual en vez de diario.
+                  // En vista de año muestra resumen mensual y en mes, semanal.
                   if (event is FlTapUpEvent &&
                       response != null &&
                       response.spot != null) {
@@ -1121,6 +1364,8 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                     if (idx >= 0 && idx < _weekData.length) {
                       if (_range == RangeOption.year) {
                         _showMonthlySummary(_weekData[idx]);
+                      } else if (_range == RangeOption.month) {
+                        _showWeeklySummary(_weekData[idx]);
                       } else {
                         _openDiaryFor(_weekData[idx].date);
                       }
@@ -1150,7 +1395,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                     reservedSize: 44,
                     interval: leftInterval,
                     getTitlesWidget: (value, meta) {
-                      if (showGoal && (value - calGoal).abs() < 1) {
+                      if (showGoal && (value - goalRef).abs() < 1) {
                         return Text(
                           l10n.statsGoal,
                           style: TextStyle(color: nk.amber, fontSize: 10),
@@ -1201,7 +1446,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                 horizontalLines: showGoal
                     ? [
                         HorizontalLine(
-                          y: calGoal,
+                          y: goalRef,
                           color: nk.amber.withValues(alpha: 0.5),
                           strokeWidth: 1,
                           dashArray: [5, 5],
@@ -1212,7 +1457,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               barGroups: _weekData.asMap().entries.map((entry) {
                 final idx = entry.key;
                 final data = entry.value;
-                final isOver = data.calories > calGoal;
+                final isOver = data.calories > goalRef;
                 return BarChartGroupData(
                   x: idx,
                   barRods: [
@@ -1221,13 +1466,11 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                       color: isOver ? nk.fat : nk.amber,
                       width: barWidth,
                       borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(
-                          _range == RangeOption.month ? 3 : 6,
-                        ),
+                        top: Radius.circular(6),
                       ),
                       backDrawRodData: BackgroundBarChartRodData(
                         show: showGoal,
-                        toY: calGoal,
+                        toY: goalRef,
                         color: nk.surfaceHigh.withValues(alpha: 0.5),
                       ),
                     ),
