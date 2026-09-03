@@ -340,7 +340,6 @@ class _NekoTourStepLayerState extends State<_NekoTourStepLayer>
   Widget _buildBubbleCard(NekoTourStep step) {
     final nk = context.nk;
     final isDark = nk.mode == NekoThemeMode.dark;
-    final accent = _accentFor(nk, step.bubbleVariant);
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 320),
@@ -369,7 +368,7 @@ class _NekoTourStepLayerState extends State<_NekoTourStepLayer>
               style: _mono(
                 size: 10,
                 weight: FontWeight.w700,
-                color: accent,
+                color: nk.textDim,
                 letterSpacing: 1.6,
               ),
             ),
@@ -379,7 +378,7 @@ class _NekoTourStepLayerState extends State<_NekoTourStepLayer>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (step.icon != null) ...[
-                Icon(step.icon, size: 18, color: accent),
+                Icon(step.icon, size: 18, color: nk.textDim),
                 const SizedBox(width: 8),
               ],
               Expanded(
@@ -451,16 +450,6 @@ class _NekoTourStepLayerState extends State<_NekoTourStepLayer>
     }
   }
 
-  Color _accentFor(NekoColors nk, BubbleVariant v) {
-    switch (v) {
-      case BubbleVariant.jagged:
-        return nk.danger;
-      case BubbleVariant.cloud:
-        return nk.amber;
-      case BubbleVariant.heart:
-        return nk.cat;
-    }
-  }
 }
 
 class _SpotlightPainter extends CustomPainter {
