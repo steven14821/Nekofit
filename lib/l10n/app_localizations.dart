@@ -779,19 +779,19 @@ abstract class AppLocalizations {
   /// No description provided for @extremeBody.
   ///
   /// In es, this message translates to:
-  /// **'Dale a tu plan un plazo, ritmo y contexto reales: por cuántas semanas, si ayunas, y qué alimentos y condiciones respetar. Nuestro gato IA lo usará cada semana.'**
+  /// **'Define el plazo, el ritmo de comidas y las condiciones de tu plan. Nuestro gato IA lo usará cada semana para armar tus menús.'**
   String get extremeBody;
 
   /// No description provided for @extremeEnableLabel.
   ///
   /// In es, this message translates to:
-  /// **'Crear plan con plazo'**
+  /// **'Crear plan personalizado'**
   String get extremeEnableLabel;
 
   /// No description provided for @extremeEnableDesc.
   ///
   /// In es, this message translates to:
-  /// **'Actívalo para generar un plan de 4, 8 o 12 semanas que evoluciona contigo.'**
+  /// **'Actívalo para generar un plan de 4, 8 o 12 semanas con tus preferencias y condiciones.'**
   String get extremeEnableDesc;
 
   /// No description provided for @extremePhaseLabel.
@@ -905,13 +905,13 @@ abstract class AppLocalizations {
   /// No description provided for @extremeContextLabel.
   ///
   /// In es, this message translates to:
-  /// **'Tu contexto (opcional)'**
+  /// **'Tu contexto, opcional'**
   String get extremeContextLabel;
 
   /// No description provided for @extremeContextHint.
   ///
   /// In es, this message translates to:
-  /// **'Este contexto viaja a cada plan semanal IA. Escribe separado por comas.'**
+  /// **'Este contexto se aplica a cada plan semanal. Separa los elementos con comas.'**
   String get extremeContextHint;
 
   /// No description provided for @extremeMedicalLabel.
@@ -923,19 +923,19 @@ abstract class AppLocalizations {
   /// No description provided for @extremeMedicalHint.
   ///
   /// In es, this message translates to:
-  /// **'P. ej. resistencia a la insulina, hipertensión, hipotiroidismo…'**
+  /// **'Ejemplos: resistencia a la insulina, hipertensión, hipotiroidismo'**
   String get extremeMedicalHint;
 
   /// No description provided for @extremeDietLabel.
   ///
   /// In es, this message translates to:
-  /// **'Preferencias / restricciones'**
+  /// **'Preferencias y restricciones'**
   String get extremeDietLabel;
 
   /// No description provided for @extremeDietHint.
   ///
   /// In es, this message translates to:
-  /// **'P. ej. vegana, keto, sin gluten, sin lactosa…'**
+  /// **'Ejemplos: vegana, keto, sin gluten, sin lactosa'**
   String get extremeDietHint;
 
   /// No description provided for @extremeMustHaveLabel.
@@ -947,7 +947,7 @@ abstract class AppLocalizations {
   /// No description provided for @extremeMustHaveHint.
   ///
   /// In es, this message translates to:
-  /// **'Alimentos que te encantan y NO quieres soltar (se incluyen casi a diario).'**
+  /// **'Alimentos que te encantan y no quieres soltar. Se incluyen casi a diario.'**
   String get extremeMustHaveHint;
 
   /// No description provided for @extremeAversionsLabel.
@@ -965,7 +965,7 @@ abstract class AppLocalizations {
   /// No description provided for @extremeNotice.
   ///
   /// In es, this message translates to:
-  /// **'Tu fase redefine las calorías: con menos plazo el déficit es más agresivo, con más semanas es más suave. Al vencer el plan, NekoFit te sugerirá la siguiente fase antes de tocarte nada.'**
+  /// **'El plan es un apoyo opcional que organiza tus comidas sobre las calorías de tu objetivo sin cambiarlas. Al vencer, NekoFit te sugerirá la siguiente fase.'**
   String get extremeNotice;
 
   /// No description provided for @planExpiredTitle.
@@ -983,7 +983,7 @@ abstract class AppLocalizations {
   /// No description provided for @planExpiredBody.
   ///
   /// In es, this message translates to:
-  /// **'Tu plan de {weeks} semanas terminó. La siguiente fase sugerida es: {phase}. ¿La aplicamos? Recalcularemos tus macros.'**
+  /// **'Tu plan de {weeks} semanas ha terminado. La siguiente fase sugerida es {phase}. ¿La aplicamos? Se mantendrán las calorías de tu objetivo.'**
   String planExpiredBody(int weeks, String phase);
 
   /// No description provided for @planApprove.
@@ -995,13 +995,13 @@ abstract class AppLocalizations {
   /// No description provided for @planSkip.
   ///
   /// In es, this message translates to:
-  /// **'Ahora no'**
+  /// **'No por ahora'**
   String get planSkip;
 
   /// No description provided for @planTransited.
   ///
   /// In es, this message translates to:
-  /// **'¡Fase aplicada! Nuevos macros calculados y nuevo plan activo.'**
+  /// **'Fase aplicada. Tu nuevo plan ya está activo y mantiene las calorías de tu objetivo.'**
   String get planTransited;
 
   /// No description provided for @planTransitError.
@@ -1349,13 +1349,13 @@ abstract class AppLocalizations {
   /// No description provided for @homePlanEditHint.
   ///
   /// In es, this message translates to:
-  /// **'Toca para editar tu fase, plazo y comidas. También puedes volver al ritmo clásico.'**
+  /// **'Toca para ajustar tu fase, duración y comidas. También puedes volver al ritmo clásico sin plan.'**
   String get homePlanEditHint;
 
   /// No description provided for @homePlanEmptyHint.
   ///
   /// In es, this message translates to:
-  /// **'Personalización extrema: fase, duración y hábitos. Afecta tus macros y tu plan semanal.'**
+  /// **'Crea un plan opcional que organiza tus comidas sobre las calorías de tu objetivo sin cambiarlas.'**
   String get homePlanEmptyHint;
 
   /// No description provided for @planCardProgress.

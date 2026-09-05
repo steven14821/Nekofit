@@ -4,17 +4,6 @@ import 'package:nekofit/models/nutrition_plan.dart';
 
 void main() {
   group('MealSchedule', () {
-    test('sin ayuno devuelve todas las comidas', () {
-      const s = MealSchedule(mealsPerDay: 4, intermittentFasting: false);
-      expect(s.effectiveMeals, 4);
-    });
-
-    test('con 16:8 la primera toma cae fuera de la ventana', () {
-      const s = MealSchedule(
-          mealsPerDay: 4, intermittentFasting: true, fastingHours: 16);
-      expect(s.effectiveMeals, 3);
-    });
-
     test('se serializa y deserializa', () {
       const s = MealSchedule(
           mealsPerDay: 5, intermittentFasting: true, fastingHours: 18);
@@ -81,25 +70,6 @@ void main() {
     test('está vacío sin datos y no con datos', () {
       expect(const NutritionContext().isEmpty, true);
       expect(const NutritionContext(medicalConditions: ['x']).isEmpty, false);
-    });
-  });
-
-  group('CalorieCalculator.caloricAdjustment', () {
-    test('déficit escala según duración', () {
-      expect(CalorieCalculator.caloricAdjustment(phase: 'cut', durationWeeks: 4, isDeficit: true), -500);
-      expect(CalorieCalculator.caloricAdjustment(phase: 'cut', durationWeeks: 8, isDeficit: true), -400);
-      expect(CalorieCalculator.caloricAdjustment(phase: 'cut', durationWeeks: 12, isDeficit: true), -300);
-    });
-
-    test('superávit escala según duración', () {
-      expect(CalorieCalculator.caloricAdjustment(phase: 'lean_gain', durationWeeks: 4, isSurplus: true), 350);
-      expect(CalorieCalculator.caloricAdjustment(phase: 'lean_gain', durationWeeks: 8, isSurplus: true), 300);
-      expect(CalorieCalculator.caloricAdjustment(phase: 'lean_gain', durationWeeks: 12, isSurplus: true), 250);
-    });
-
-    test('recomposición y mantenimiento no ajustan kcal', () {
-      expect(CalorieCalculator.caloricAdjustment(phase: 'recomposition', durationWeeks: 8), 0);
-      expect(CalorieCalculator.caloricAdjustment(phase: 'maintenance', durationWeeks: 8), 0);
     });
   });
 
@@ -171,6 +141,12 @@ void main() {
             mealCount: 5, intermittentFasting: false),
         ['Desayuno', 'Almuerzo', 'Merienda', 'Cena', 'Snack'],
       );
+      // 3 comidas no incluye merienda (coherente con mealPartitioning).
+      expect(
+        CalorieCalculator.feedingWindowSlots(
+            mealCount: 3, intermittentFasting: false),
+        ['Desayuno', 'Almuerzo', 'Cena'],
+      );
     });
 
     test('con ayuno se excluye el desayuno', () {
@@ -178,6 +154,72 @@ void main() {
           mealCount: 4, intermittentFasting: true);
       expect(slots.contains('Desayuno'), false);
       expect(slots.length, 3);
+    });
+
+    test('con 3 comidas y ayuno quedan Almuerzo y Cena', () {
+      expect(
+        CalorieCalculator.feedingWindowSlots(
+            mealCount: 3, intermittentFasting: true),
+        ['Almuerzo', 'Cena'],
+      );
+    });
+  });
+
+  group('CalorieCalculator.feedingWindowPartitions', () {
+    Map<String, Map<String, double>> p4() => CalorieCalculator.mealPartitioning(
+          targetCalories: 2000,
+          targetProteins: 150,
+          targetCarbs: 200,
+          targetFats: 67,
+          mealCount: 4,
+        );
+
+    test('sin ayuno no altera el reparto', () {
+      final slots = CalorieCalculator.feedingWindowSlots(
+          mealCount: 4, intermittentFasting: false);
+      final p = CalorieCalculator.feedingWindowPartitions(
+        partitions: p4(),
+        feedSlots: slots,
+        targetCalories: 2000,
+      );
+      final kcal = p.values.fold<double>(0, (a, m) => a + m['calories']!);
+      expect(kcal, closeTo(2000, 3));
+      expect(p.keys.toList(), ['Desayuno', 'Almuerzo', 'Merienda', 'Cena']);
+    });
+
+    test('con ayuno las tomas de la ventana suman el 100% de la meta', () {
+      final slots = CalorieCalculator.feedingWindowSlots(
+          mealCount: 4, intermittentFasting: true);
+      expect(slots, ['Almuerzo', 'Merienda', 'Cena']);
+      final p = CalorieCalculator.feedingWindowPartitions(
+        partitions: p4(),
+        feedSlots: slots,
+        targetCalories: 2000,
+      );
+      // Sin renorm la ventana solo cubría 75% de la meta: 700+300+500.
+      final kcal = p.values.fold<double>(0, (a, m) => a + m['calories']!);
+      expect(kcal, closeTo(2000, 3));
+      expect(p.keys.toSet(), slots.toSet());
+      expect(p.containsKey('Desayuno'), false);
+    });
+
+    test('5 comidas con ayuno también cubren la meta', () {
+      final slots = CalorieCalculator.feedingWindowSlots(
+          mealCount: 5, intermittentFasting: true);
+      final partitions = CalorieCalculator.mealPartitioning(
+        targetCalories: 2200,
+        targetProteins: 160,
+        targetCarbs: 240,
+        targetFats: 73,
+        mealCount: 5,
+      );
+      final p = CalorieCalculator.feedingWindowPartitions(
+        partitions: partitions,
+        feedSlots: slots,
+        targetCalories: 2200,
+      );
+      final kcal = p.values.fold<double>(0, (a, m) => a + m['calories']!);
+      expect(kcal, closeTo(2200, 3));
     });
   });
 }

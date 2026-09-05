@@ -5,7 +5,6 @@ import '../core/neko_palette.dart';
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../models/nutrition_plan.dart';
-import '../models/user_context.dart';
 import '../services/firebase_service.dart';
 import '../services/nutrition_plan_service.dart';
 import '../widgets/amber_atmosphere.dart';
@@ -13,10 +12,9 @@ import '../widgets/amber_atmosphere.dart';
 /// Editor del plan nutricional (personalización extrema).
 ///
 /// Disponible para usuarios NUEVOS y ANTIGUOS: crea un plan si no existe y
-/// actualiza el activo en caso contrario. Al guardar se recalculan y persisten
-/// los macros según la fase elegida (déficit/superávit/recomposición) y el
-/// plazo (4/8/12 semanas). Desde aquí también se puede eliminar el plan y
-/// volver al ritmo clásico.
+/// actualiza el activo en caso contrario. El plan es OPCIONAL y solo estructura
+/// las comidas (tomas, ayuno, contexto) para el plan semanal con IA; NUNCA
+/// reescribe las calorías ni el objetivo, que salen del cálculo clásico.
 class PlanEditorScreen extends ConsumerStatefulWidget {
   const PlanEditorScreen({super.key});
 
@@ -44,8 +42,6 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
   final _mustHaveController = TextEditingController();
   final _aversionsController = TextEditingController();
 
-  Map<String, dynamic>? _profileData;
-
   @override
   void initState() {
     super.initState();
@@ -65,10 +61,6 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
     final uid = _firebase.currentUser?.uid;
     if (uid == null) return;
     try {
-      final doc =
-          await _firebase.db.collection('users').doc(uid).get();
-      _profileData = doc.data();
-
       final plan = await _service.activePlan(uid);
       if (plan != null) {
         _planId = plan.id;
@@ -83,6 +75,19 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
         _dietController.text = plan.context.dietaryPreferences.join(', ');
         _mustHaveController.text = plan.context.mustHaveFoods.join(', ');
         _aversionsController.text = plan.context.aversions.join(', ');
+      } else {
+        // Primer plan: que la fase nazca alineada con el objetivo del perfil
+        // para que el plan semanal y la meta no se contradigan.
+        final doc =
+            await _firebase.db.collection('users').doc(uid).get();
+        final goal = doc.data()?['fitnessGoal'] as String?;
+        if (goal != null) {
+          _phase = switch (goal) {
+            'Perder peso' => 'cut',
+            'Ganar músculo' => 'lean_gain',
+            _ => 'maintenance',
+          };
+        }
       }
     } catch (_) {}
     if (mounted) setState(() => _loading = false);
@@ -96,16 +101,12 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
 
   Future<void> _save() async {
     final uid = _firebase.currentUser?.uid;
-    if (uid == null || _profileData == null) return;
+    if (uid == null) return;
     final l10n = AppLocalizations.of(context);
     setState(() => _saving = true);
     try {
-      final user = UserContext.fromMap(
-        Map<String, dynamic>.from(_profileData!)..['uid'] = uid,
-      );
       await _service.saveOrUpdatePlan(
         uid: uid,
-        user: user,
         phase: PlanPhase.fromString(_phase),
         durationWeeks: _durationWeeks,
         schedule: MealSchedule(
@@ -134,14 +135,11 @@ class _PlanEditorScreenState extends ConsumerState<PlanEditorScreen> {
 
   Future<void> _deletePlan() async {
     final uid = _firebase.currentUser?.uid;
-    if (uid == null || _profileData == null) return;
+    if (uid == null) return;
     final l10n = AppLocalizations.of(context);
-    final user = UserContext.fromMap(
-      Map<String, dynamic>.from(_profileData!)..['uid'] = uid,
-    );
     setState(() => _saving = true);
     try {
-      await _service.clearPlan(uid: uid, user: user);
+      await _service.clearPlan(uid: uid);
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } catch (e) {

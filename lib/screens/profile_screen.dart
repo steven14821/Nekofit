@@ -5,7 +5,6 @@ import '../core/neko_palette.dart';
 import '../core/providers.dart';
 import '../l10n/app_localizations.dart';
 import '../models/nutrition_plan.dart';
-import '../models/user_context.dart';
 import '../services/firebase_service.dart';
 import '../services/nutrition_plan_service.dart';
 import '../widgets/amber_atmosphere.dart';
@@ -221,11 +220,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (uid == null || _data == null) return;
     final l10n = AppLocalizations.of(context);
     try {
-      final user = UserContext.fromMap(
-        Map<String, dynamic>.from(_data!)..['uid'] = uid,
+      await NutritionPlanService.instance.transitionToPhase(
+        uid: uid,
+        phase: _plan!.nextPhase,
+        current: _plan,
       );
-      await NutritionPlanService.instance
-          .transitionToPhase(user: user, uid: uid, phase: _plan!.nextPhase);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.planTransited)),

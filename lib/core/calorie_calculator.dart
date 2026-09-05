@@ -177,13 +177,10 @@ class CalorieCalculator {
     required double targetCalories,
     required double weightKg,
     String? fitnessGoal,
-    bool recomposition = false,
   }) {
     double proteinPerKg;
     final goalLower = (fitnessGoal ?? '').toLowerCase();
-    if (recomposition) {
-      proteinPerKg = 1.9; // recomposición: proteína alta sin superávit
-    } else if (goalLower.contains('perder') ||
+    if (goalLower.contains('perder') ||
         goalLower.contains('déficit') ||
         goalLower.contains('deficit') ||
         goalLower.contains('cut')) {
@@ -270,65 +267,62 @@ class CalorieCalculator {
     };
   }
 
-  /// Ajuste calórico (déficit o superávit) sobre el mantenimiento según la
-  /// fase del plan y su plazo en semanas. Plazos más largos usan una pendiente
-  /// más suave para favorecer la adherencia y evitar desgaste metabólico.
-  ///
-  ///   déficit : 04 sem -> -500 | 08 sem -> -400 | 12 sem -> -300
-  ///   superávit: 04 sem -> +350 | 08 sem -> +300 | 12 sem -> +250
-  ///   recomposición / mantenimiento: 0 (cambio de composición sobre el mismo
-  ///   total calórico, redistribuyendo proteína).
-  static double caloricAdjustment({
-    required String phase,
-    required int durationWeeks,
-    bool isDeficit = false,
-    bool isSurplus = false,
-  }) {
-    final weeks = durationWeeks <= 4 ? 4 : (durationWeeks >= 12 ? 12 : 8);
-    if (phase == 'recomposition' || phase == 'maintenance') return 0;
-    if (isSurplus) {
-      switch (weeks) {
-        case 4:
-          return 350;
-        case 12:
-          return 250;
-        default:
-          return 300;
-      }
+  /// Claves de tomas según el nº de comidas diarias ([mealCount]).
+  /// La base refleja exactamente el plan: 3 tomas no incluye merienda.
+  ///   - 3 tomas: Desayuno, Almuerzo, Cena
+  ///   - 4 tomas: Desayuno, Almuerzo, Merienda, Cena
+  ///   - 5 tomas: Desayuno, Almuerzo, Merienda, Cena, Snack
+  static List<String> mealSlots(int mealCount) {
+    switch (mealCount) {
+      case 3:
+        return ['Desayuno', 'Almuerzo', 'Cena'];
+      case 5:
+        return ['Desayuno', 'Almuerzo', 'Merienda', 'Cena', 'Snack'];
+      default:
+        return ['Desayuno', 'Almuerzo', 'Merienda', 'Cena'];
     }
-    if (isDeficit) {
-      switch (weeks) {
-        case 4:
-          return -500;
-        case 12:
-          return -300;
-        default:
-          return -400;
-      }
-    }
-    return 0;
   }
 
-  /// Mapa de fase -> claves de particionado que deben omitirse bajo ayuno
-  /// intermitente. Ventana de alimentación típica (16:8) empieza a medio día:
-  /// se omite el Desayuno; con 5 tomas también se omite la primera merienda.
-  /// Devuelve las claves de tomas que SÍ entran en la ventana según el reparto
-  /// resultante de [mealCount] y la ventana IF.
+  /// Ventana de alimentación bajo ayuno intermitente. La ventana típica (16:8)
+  /// empieza a medio día: se omite el Desayuno. Devuelve las claves de tomas
+  /// que SÍ entran en la ventana según [mealCount] y la ventana IF.
   static List<String> feedingWindowSlots({
     required int mealCount,
     required bool intermittentFasting,
   }) {
-    final base = [
-      'Desayuno',
-      'Almuerzo',
-      'Merienda',
-      'Cena',
-      if (mealCount == 5) 'Snack',
-    ];
+    final base = mealSlots(mealCount);
     if (!intermittentFasting) return base;
-    // Con ayuno, la primera toma (Desayuno) queda dentro de la ventana de ayuno
-    // así que se excluye del reparto activo de tomas.
+    // Con ayuno, la primera toma (Desayuno) queda fuera de la ventana de
+    // alimentación, así que se excluye del reparto activo de tomas.
     return base.where((s) => s != 'Desayuno').toList();
+  }
+
+  /// Recalcula el particionado para que SOLO las tomas de la ventana activa
+  /// [feedSlots] absorban el 100% de la meta diaria. Sin esto, el ayuno deja
+  /// fuera el Desayuno y su parte se pierde: el plan serviría solo un 65–80%
+  /// de las calorías objetivo.
+  static Map<String, Map<String, double>> feedingWindowPartitions({
+    required Map<String, Map<String, double>> partitions,
+    required List<String> feedSlots,
+    required double targetCalories,
+  }) {
+    final window = partitions.entries
+        .where((e) => feedSlots.contains(e.key))
+        .toList();
+    if (window.isEmpty) return partitions;
+    final windowKcal = window.fold<double>(
+        0, (sum, e) => sum + e.value['calories']!);
+    if (windowKcal <= 0) return partitions;
+    final factor = targetCalories / windowKcal;
+    return {
+      for (final e in window)
+        e.key: {
+          'calories': (e.value['calories']! * factor).roundToDouble(),
+          'proteins': (e.value['proteins']! * factor).roundToDouble(),
+          'carbs': (e.value['carbs']! * factor).roundToDouble(),
+          'fats': (e.value['fats']! * factor).roundToDouble(),
+        },
+    };
   }
 
   /// Fórmula de la Marina de EE.UU. para % de grasa corporal.

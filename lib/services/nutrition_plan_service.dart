@@ -1,36 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../core/calorie_calculator.dart';
 import '../models/nutrition_plan.dart';
-import '../models/user_context.dart';
 import 'firebase_service.dart';
-
-/// Resultado de aplicar una fase a la meta calórica.
-class PhaseMacroTarget {
-  final double calories;
-  final double proteins;
-  final double carbs;
-  final double fats;
-  final String phase;
-
-  const PhaseMacroTarget({
-    required this.calories,
-    required this.proteins,
-    required this.carbs,
-    required this.fats,
-    required this.phase,
-  });
-
-  Map<String, double> toMacroGoals() =>
-      {'calories': calories, 'proteins': proteins, 'carbs': carbs, 'fats': fats};
-}
+import 'weekly_plan_service.dart';
 
 /// Servicio de planes nutricionales.
 ///
 ///   • Persistencia: `users/{uid}/plans/{id}` (solo lectura/escritura del dueño
 ///     con perfil completo, ver firestore.rules).
-///   • Cálculo: deriva la meta calórica/macros de una fase desde el TDEE del
-///     usuario, escalando el déficit/superávit por el plazo del plan.
+///   • Rol: el plan es OPCIONAL y actúa como guía de comidas. Estructura las
+///     tomas (cuántas comidas, ayuno, contexto de salud) para el plan semanal
+///     con IA. NUNCA modifica `macroGoals` ni `fitnessGoal`: la única fuente de
+///     las calorías es el cálculo clásico (TDEE + objetivo del usuario).
 ///   • Ciclo de vida: detecta planes vencidos y proyecta la fase de transición
 ///     recomendada («aviso + aprobación»), sin cambiar nada en secreto.
 class NutritionPlanService {
@@ -80,12 +61,14 @@ class NutritionPlanService {
     return ref.id;
   }
 
-  /// Crea un plan nuevo o actualiza el activo (mismo [planId]) y, en ambos
-  /// casos, recalcula y persiste los macros del usuario según la fase.
-  /// Reinicia el período del plan al guardar la edición.
+  /// Crea un plan nuevo o actualiza el activo (mismo [planId]).
+  ///
+  /// No toca `macroGoals` ni `fitnessGoal`: el objetivo del usuario es la única
+  /// fuente de las calorías; el plan solo define la forma de las comidas.
+  /// Al cambiar la guía (tomas/ayuno/contexto) se invalida el caché del plan
+  /// semanal para que la IA lo regenere con la nueva forma.
   Future<void> saveOrUpdatePlan({
     required String uid,
-    required UserContext user,
     required PlanPhase phase,
     required int durationWeeks,
     required MealSchedule schedule,
@@ -113,22 +96,13 @@ class NutritionPlanService {
     } else {
       await ref.add(plan.toMap());
     }
-
-    // Recalcular y guardar macros de acuerdo a la nueva fase.
-    final target = computeTarget(user: user, plan: plan);
-    await FirebaseService.instance.db.collection('users').doc(uid).set(
-      {
-        'fitnessGoal': _goalForPhase(phase),
-        'macroGoals': target.toMacroGoals(),
-        'bmrFormula': user.bmrFormula,
-      },
-      SetOptions(merge: true),
-    );
+    await WeeklyPlanService.instance.clearCache(uid);
   }
 
-  /// Elimina el plan activo (el usuario vuelve al flujo clásico). Opcionalmente
-  /// restaura los macros legacy recalculando sin plan.
-  Future<void> clearPlan({required String uid, required UserContext user}) async {
+  /// Elimina el plan activo (el usuario vuelve al flujo clásico, guiándose
+  /// solo por su objetivo). No altera `macroGoals` ni `fitnessGoal` e invalida
+  /// el caché del plan semanal.
+  Future<void> clearPlan({required String uid}) async {
     final snap = await FirebaseService.instance.db
         .collection('users')
         .doc(uid)
@@ -137,122 +111,28 @@ class NutritionPlanService {
     for (final doc in snap.docs) {
       await doc.reference.delete();
     }
-    final target = computeTarget(user: user, plan: null);
-    await FirebaseService.instance.db.collection('users').doc(uid).set(
-      {
-        'fitnessGoal': user.fitnessGoal,
-        'macroGoals': target.toMacroGoals(),
-        'bmrFormula': user.bmrFormula,
-      },
-      SetOptions(merge: true),
-    );
-  }
-
-  /// Aplica la fase del plan a las métricas del usuario para obtener la meta
-  /// de calorías y macronutrientes. Si [plan] es nulo calcula con el objetivo
-  /// legacy (`fitnessGoal` + ajustes fijos -400/+300).
-  PhaseMacroTarget computeTarget({
-    required UserContext user,
-    required NutritionPlan? plan,
-  }) {
-    final bmr = CalorieCalculator.calculateBmr(
-      weightKg: user.weight,
-      heightCm: user.height,
-      age: user.age,
-      isMale: user.gender == 'Masculino',
-      bodyFatPercent: user.bodyFatPercent,
-    );
-    final tdee = CalorieCalculator.dailyTdee(
-      bmr: bmr,
-      lifestyle: user.dailyLifestyle,
-      trainingActivityKey: user.trainingActivity,
-      trainingMinutesPerWeek: user.weeklyTrainingMinutes,
-    );
-
-    final isDeficit = _goalIs(user, ['perder', 'déficit', 'deficit', 'cut']);
-    final isSurplus = _goalIs(user, ['ganar', 'músculo', 'musculo', 'superávit', 'bulk']);
-
-    final phaseName = plan?.phase.storageName ??
-        (isDeficit
-            ? 'cut'
-            : (isSurplus ? 'lean_gain' : 'maintenance'));
-
-    final adjustment = CalorieCalculator.caloricAdjustment(
-      phase: phaseName,
-      durationWeeks: plan?.durationWeeks ?? 8,
-      isDeficit: isDeficit,
-      isSurplus: isSurplus,
-    );
-    var targetCalories = (tdee + adjustment).roundToDouble();
-    if (targetCalories < 1200) targetCalories = 1200;
-
-    final recomposition = plan?.phase == PlanPhase.recomposition;
-    final macros = CalorieCalculator.distributeMacros(
-      targetCalories: targetCalories,
-      weightKg: user.weight > 30 ? user.weight : 70.0,
-      fitnessGoal: user.fitnessGoal,
-      recomposition: recomposition,
-    );
-    return PhaseMacroTarget(
-      calories: macros['calories']!,
-      proteins: macros['proteins']!,
-      carbs: macros['carbs']!,
-      fats: macros['fats']!,
-      phase: phaseName,
-    );
+    await WeeklyPlanService.instance.clearCache(uid);
   }
 
   /// Describe la transición recomendada al vencer el plan (para mostrarla y
   /// que el usuario la confirme antes de recalcular).
   PlanPhase projectedNextPhase(NutritionPlan? plan) => plan?.nextPhase ?? PlanPhase.maintenance;
 
-  /// Si el plan ya venció, persiste los macros de mantenimiento (la fase de
-  /// transición) en `users/{uid}/macroGoals` después de que el usuario lo
-  /// apruebe. No se llama sin confirmación explícita.
+  /// Al vencer el plan y tras la aprobación del usuario, crea la siguiente
+  /// fase conservando la forma de comidas ([MealSchedule]) y el contexto del
+  /// plan anterior. No reescribe macros ni objetivo.
   Future<void> transitionToPhase({
     required String uid,
-    required UserContext user,
     required PlanPhase phase,
+    NutritionPlan? current,
   }) async {
-    final pending = NutritionPlan(
-      phase: phase,
-      durationWeeks: 8,
-      startDate: DateTime.now(),
-      endDate: DateTime.now().add(const Duration(days: 7 * 8)),
-      schedule: const MealSchedule(),
-    );
-    final target = computeTarget(user: user, plan: pending);
-    await FirebaseService.instance.db.collection('users').doc(uid).set(
-      {
-        'fitnessGoal': _goalForPhase(phase),
-        'macroGoals': target.toMacroGoals(),
-        'bmrFormula': user.bmrFormula,
-      },
-      SetOptions(merge: true),
-    );
     await savePlan(
       uid: uid,
       phase: phase,
-      durationWeeks: 8,
-      schedule: const MealSchedule(),
+      durationWeeks: current?.durationWeeks ?? 8,
+      schedule: current?.schedule ?? const MealSchedule(),
+      context: current?.context ?? const NutritionContext(),
     );
-  }
-
-  bool _goalIs(UserContext user, List<String> needles) {
-    final g = user.fitnessGoal.toLowerCase();
-    return needles.any(g.contains);
-  }
-
-  String _goalForPhase(PlanPhase phase) {
-    switch (phase) {
-      case PlanPhase.cut:
-        return 'Perder peso';
-      case PlanPhase.leanGain:
-        return 'Ganar músculo';
-      case PlanPhase.recomposition:
-        return 'Recomposición';
-      case PlanPhase.maintenance:
-        return 'Mantener peso';
-    }
+    await WeeklyPlanService.instance.clearCache(uid);
   }
 }

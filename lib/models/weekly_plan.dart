@@ -98,7 +98,7 @@ class PlannedDay {
       PlannedDay(date: date, meals: meals ?? this.meals);
 }
 
-/// Plan semanal completo: 7 días × 5 comidas.
+/// Plan semanal completo: 7 días con el número de comidas definido en el plan.
 @immutable
 class WeeklyPlan {
   final DateTime weekStart; // lunes de la semana

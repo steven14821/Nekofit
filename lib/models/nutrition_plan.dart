@@ -65,13 +65,6 @@ class MealSchedule {
     this.fastingHours = 0,
   });
 
-  /// Cuántas tomas reales caen dentro de la ventana de alimentación.
-  /// Con IF de 8h de ventana (16:8) el desayuno sale del plan (3 tomas).
-  int get effectiveMeals {
-    if (!intermittentFasting || fastingHours <= 0) return mealsPerDay;
-    return mealsPerDay - 1; // la primera toma cae fuera de la ventana
-  }
-
   Map<String, dynamic> toMap() => {
         'mealsPerDay': mealsPerDay,
         'intermittentFasting': intermittentFasting,

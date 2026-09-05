@@ -377,14 +377,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get extremeBody =>
-      'Give your plan a real timeline, pace and context: for how many weeks, whether you fast, and which foods and conditions to respect. Our AI cat uses it every week.';
+      'Set the timeline, meal rhythm and conditions of your plan. Our AI cat uses it every week to build your menus.';
 
   @override
-  String get extremeEnableLabel => 'Create a timed plan';
+  String get extremeEnableLabel => 'Create a custom plan';
 
   @override
   String get extremeEnableDesc =>
-      'Turn it on to generate a 4, 8 or 12-week plan that evolves with you.';
+      'Turn it on to generate a 4, 8 or 12-week plan with your preferences and conditions.';
 
   @override
   String get extremePhaseLabel => 'Plan phase';
@@ -443,31 +443,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get extremeIf18 => '18:6';
 
   @override
-  String get extremeContextLabel => 'Your context (optional)';
+  String get extremeContextLabel => 'Your context, optional';
 
   @override
   String get extremeContextHint =>
-      'This context goes into every weekly AI plan. Write items separated by commas.';
+      'This context applies to every weekly plan. Separate items with commas.';
 
   @override
   String get extremeMedicalLabel => 'Medical conditions';
 
   @override
   String get extremeMedicalHint =>
-      'E.g. insulin resistance, hypertension, hypothyroidism…';
+      'Examples: insulin resistance, hypertension, hypothyroidism';
 
   @override
-  String get extremeDietLabel => 'Preferences / restrictions';
+  String get extremeDietLabel => 'Dietary preferences and restrictions';
 
   @override
-  String get extremeDietHint => 'E.g. vegan, keto, gluten-free, lactose-free…';
+  String get extremeDietHint =>
+      'Examples: vegan, keto, gluten-free, lactose-free';
 
   @override
   String get extremeMustHaveLabel => 'Must haves';
 
   @override
   String get extremeMustHaveHint =>
-      'Foods you love and don\'t want to drop (included almost daily).';
+      'Foods you love and don\'t want to give up. They are included almost daily.';
 
   @override
   String get extremeAversionsLabel => 'Aversions';
@@ -477,7 +478,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get extremeNotice =>
-      'Your phase resets calories: shorter plans use a more aggressive deficit, longer ones are gentler. When the plan ends, NekoFit suggests the next phase before touching anything.';
+      'This plan is an optional guide that organizes your meals around your objective\'s calories without changing them. When it ends, NekoFit suggests the next phase.';
 
   @override
   String get planExpiredTitle => 'Your plan ended';
@@ -487,7 +488,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String planExpiredBody(int weeks, String phase) {
-    return 'Your $weeks-week plan has ended. The suggested next phase is: $phase. Shall we apply it? We\'ll recalculate your macros.';
+    return 'Your $weeks-week plan has ended. The suggested next phase is $phase. Shall we apply it? Your objective\'s calories stay the same.';
   }
 
   @override
@@ -498,7 +499,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planTransited =>
-      'Phase applied! New macros calculated and a new plan is active.';
+      'Phase applied. Your new plan is active and keeps your objective\'s calories.';
 
   @override
   String planTransitError(String error) {
@@ -689,11 +690,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homePlanEditHint =>
-      'Tap to edit your phase, duration and meals. You can also return to the classic rhythm.';
+      'Tap to adjust your phase, duration and meals. You can also go back to a plan-free routine.';
 
   @override
   String get homePlanEmptyHint =>
-      'Extreme personalization: phase, duration and habits. It affects your macros and weekly plan.';
+      'Create an optional plan that organizes your meals around your objective\'s calories without changing them.';
 
   @override
   String planCardProgress(int daysLeft, int totalDays) {

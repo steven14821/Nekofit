@@ -160,6 +160,18 @@ class WeeklyPlanService {
     return '$_cachePrefix${uid}_$stamp';
   }
 
+  /// Invalida todo el caché del plan semanal de un usuario. Se usa cuando
+  /// cambia la forma del plan nutricional (tomas/ayuno/contexto) para que la
+  /// IA regenere la semana con la nueva guía en vez de servir una vieja.
+  Future<void> clearCache(String uid) async {
+    final prefs = await SharedPreferences.getInstance();
+    final prefix = '$_cachePrefix${uid}_';
+    final keys = prefs.getKeys().where((k) => k.startsWith(prefix)).toList();
+    for (final key in keys) {
+      await prefs.remove(key);
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // Generación con Gemini siguiendo las 7 Reglas Fisiológicas
   // ═══════════════════════════════════════════════════════════════════════════
@@ -228,12 +240,16 @@ class WeeklyPlanService {
         : physioMacros['carbs']!;
     final double minFiberGrams = physioMacros['fiber'] ?? 28.0;
 
-    final mealPartitions = CalorieCalculator.mealPartitioning(
+    final mealPartitions = CalorieCalculator.feedingWindowPartitions(
+      partitions: CalorieCalculator.mealPartitioning(
+        targetCalories: safeTargetKcal,
+        targetProteins: targetProteins,
+        targetCarbs: targetCarbs,
+        targetFats: targetFats,
+        mealCount: mealsPerDay,
+      ),
+      feedSlots: feedSlots,
       targetCalories: safeTargetKcal,
-      targetProteins: targetProteins,
-      targetCarbs: targetCarbs,
-      targetFats: targetFats,
-      mealCount: mealsPerDay,
     );
 
     final isDeficit = user.fitnessGoal.toLowerCase().contains('perder') ||
@@ -246,7 +262,7 @@ class WeeklyPlanService {
     final ctx = plan?.context ?? const NutritionContext();
     final hasCtx = !ctx.isEmpty;
     final activeSlots = ifActive
-        ? 'Ayuno intermitente activo (${schedule.fastingHours}:8). Solo estas '
+        ? 'Ayuno intermitente activo (${schedule.fastingHours}:${24 - schedule.fastingHours}). Solo estas '
             'tomas entran en la ventana: ${feedSlots.join(", ")}.'
         : 'Sin ayuno intermitente.';
     final contextBlock = hasCtx
@@ -296,7 +312,6 @@ DATOS DEL USUARIO Y OBJETIVO
 2. CRONONUTRICIÓN Y UMBRAL DE LEUCINA:
    - Reparto calórico y proteico por tiempos de comida:
 ${mealPartitions.entries.where((e) => e.value['calories']! > 0).map((e) => '     * ${e.key}: ~${e.value['calories']!.toStringAsFixed(0)} kcal | P: ${e.value['proteins']!.toStringAsFixed(0)}g | C: ${e.value['carbs']!.toStringAsFixed(0)}g | G: ${e.value['fats']!.toStringAsFixed(0)}g').join('\n')}
-   - UMBRAL DE LEUCINA: Cada comida principal (Desayuno, Almuerzo y Cena) DEBE contener entre 20 y 40g de proteína de alto valor biológico para estimular la síntesis de proteína muscular (MPS).
    - UMBRAL DE LEUCINA: Cada comida principal (Desayuno, Almuerzo y Cena) DEBE contener entre 20 y 40g de proteína de alto valor biológico para estimular la síntesis de proteína muscular (MPS).
 
 3. DENSIDAD NUTRICIONAL, FIBRA Y CONTROL DE GRASAS:
@@ -350,6 +365,10 @@ REQUISITOS ADICIONALES:
 - 7 días consecutivos comenzando el ${weekStart.toIso8601String().substring(0, 10)}.
 - $slotRequirements
 - La suma diaria de calorías de cada día debe ser exactamente ${safeTargetKcal.toStringAsFixed(0)} kcal (±30 kcal).
+- ESPECIFICIDAD DE PLATOS: El "title" debe nombrar un plato concreto y reconocible (ej: "Pechuga a la plancha con arroz integral y brócoli salteado"), nunca descripciones genéricas. El "description" DEBE incluir cantidades exactas en gramos o medidas caseras de cada ingrediente (ej: "120 g de pechuga a la plancha, 150 g de arroz integral cocido y 80 g de brócoli salteado con 5 g de AOVE") y una preparación breve.
+- RESPETA ESTRICTAMENTE el contexto personal: NO incluyas ningún alimento de "DEBES EVITAR" y cubre al menos una preferencia/alimento imprescindible por día. Si el usuario es vegano/vegetariano/sin gluten/sin lactosa, excluye por completo los alimentos conflictivos.
+- Las proteínas de cada comida principal deben completar el umbral de leucina descrito (20-40 g), incluso cuando haya ayuno intermitente.
+- No repitas el mismo plato idéntico en días distintos; rota proteínas, vegetales y granos enteros.
 ''';
 
     final response = await _model!.generateContent([Content.text(prompt)]);
@@ -458,6 +477,36 @@ REQUISITOS ADICIONALES:
     final schedule = plan?.schedule ?? const MealSchedule();
     final mealsPerDay = schedule.mealsPerDay;
     final ifActive = schedule.intermittentFasting;
+    final feedSlots = CalorieCalculator.feedingWindowSlots(
+      mealCount: mealsPerDay,
+      intermittentFasting: ifActive,
+    );
+
+    // Contexto de personalización (aversiones, dieta, imprescindibles).
+    final ctx = plan?.context ?? const NutritionContext();
+    final prefs =
+        ctx.dietaryPreferences.map((p) => p.trim().toLowerCase()).toList();
+    final vegan = prefs.any((p) => p.contains('vegan'));
+    final vegetarian =
+        vegan || prefs.any((p) => p.contains('vegetarian') || p.contains('vegetariano'));
+    final noGluten = prefs.any((p) => p.contains('gluten'));
+    final noLactose = prefs.any((p) => p.contains('lactosa'));
+    final aversionTokens =
+        ctx.aversions.map((a) => a.trim().toLowerCase()).where((a) => a.isNotEmpty).toSet();
+
+    const meatFishTokens = [
+      'pollo', 'pechuga', 'carne', 'res', 'cerdo', 'pavo', 'atún', 'atun',
+      'salmón', 'salmon', 'pescado', 'tocino', 'jamón', 'jamon', 'lomo',
+    ];
+    const animalTokens = [
+      ...meatFishTokens, 'huevo', 'queso', 'requesón', 'yogurt', 'yogur',
+      'leche', 'mantequilla', 'panqueca', 'calentado', 'miel',
+    ];
+    const glutenTokens = ['pasta', ' tostada', 'trigo', 'pan ', 'pan de', 'gluten'];
+    const lactoseTokens = ['queso', 'requesón', 'yogurt', 'yogur', 'leche', 'mantequilla', 'crema de leche'];
+
+    bool hasAny(String title, List<String> tokens) =>
+        tokens.any(title.toLowerCase().contains);
 
     final double rawTargetKcal = (user.macroGoals['calories'] ?? 0) > 0
         ? user.macroGoals['calories']!
@@ -482,17 +531,77 @@ REQUISITOS ADICIONALES:
         ? user.macroGoals['fats']!
         : physioMacros['fats']!;
 
-    final partitions = CalorieCalculator.mealPartitioning(
+    final partitions = CalorieCalculator.feedingWindowPartitions(
+      partitions: CalorieCalculator.mealPartitioning(
+        targetCalories: safeTargetKcal,
+        targetProteins: targetProteins,
+        targetCarbs: targetCarbs,
+        targetFats: targetFats,
+        mealCount: mealsPerDay,
+      ),
+      feedSlots: feedSlots,
       targetCalories: safeTargetKcal,
-      targetProteins: targetProteins,
-      targetCarbs: targetCarbs,
-      targetFats: targetFats,
-      mealCount: mealsPerDay,
     );
 
     String pick(List<PantryItem> pool, int seed, String fallback) {
       if (pool.isEmpty) return fallback;
       return pool[seed % pool.length].name;
+    }
+
+    // Alternativa segura cuando el plato de la plantilla choca con aversiones,
+    // dieta (vegana/vegetariana), gluten o lactosa. Evita ingredientes
+    // conflictivos sin romper la idea del slot.
+    String safeCarb(int seed) {
+      if (noGluten) {
+        const gf = ['arroz', 'quinoa', 'papa', 'yuca', 'batata'];
+        return gf[seed % gf.length];
+      }
+      return pick(carbs, seed, 'arroz integral');
+    }
+
+    String safeMeal(String slot, int dayIndex) {
+      final v1 = pick(veg, dayIndex * 2, 'brócoli');
+      final v2 = pick(veg, dayIndex * 2 + 1, 'zanahoria');
+      final carb = safeCarb(dayIndex);
+      final fruit = pick(veg, dayIndex * 3 + 2, 'manzana');
+      switch (slot) {
+        case 'Desayuno':
+          if (vegan) return 'Avena cocida con $fruit y semillas';
+          if (vegetarian) return 'Huevos revueltos con $v1';
+          return 'Huevos con $v1 y $carb';
+        case 'Almuerzo':
+          if (vegan) return 'Bowl de $v1 y $v2 con legumbres y $carb';
+          if (vegetarian) return 'Ensalada de $v1 y $v2 con huevo y $carb';
+          return 'Proteína magra con $v1, $v2 y $carb';
+        case 'Cena':
+          if (vegan) return 'Salteado de $v1 con tofu y $carb';
+          if (vegetarian) return 'Revoltillo de $v1 con huevo y $carb';
+          return 'Pescado o pollo al horno con $v1 y $carb';
+        default:
+          return '$fruit con semillas';
+      }
+    }
+
+    // Aplica las restricciones del contexto a un título de la plantilla.
+    String respectTitle(String title, String slot, int dayIndex) {
+      if (aversionTokens.any(title.toLowerCase().contains)) {
+        return safeMeal(slot, dayIndex);
+      }
+      if (vegan && hasAny(title, animalTokens)) return safeMeal(slot, dayIndex);
+      if (vegetarian && hasAny(title, meatFishTokens)) return safeMeal(slot, dayIndex);
+      if (noGluten && hasAny(title, glutenTokens)) return safeMeal(slot, dayIndex);
+      if (noLactose && hasAny(title, lactoseTokens)) return safeMeal(slot, dayIndex);
+      return title;
+    }
+
+    // Garantiza al menos un alimento imprescindible por día (sobre el almuerzo).
+    String addMustHave(String title, int dayIndex) {
+      if (ctx.mustHaveFoods.isEmpty) return title;
+      final food = ctx.mustHaveFoods[dayIndex % ctx.mustHaveFoods.length].trim();
+      if (food.isEmpty) return title;
+      return title.toLowerCase().contains(food.toLowerCase())
+          ? title
+          : '$title + $food';
     }
 
     // Plantillas rotando más de 25 vegetales/plantas distintas. El 5º hueco
@@ -585,8 +694,16 @@ REQUISITOS ADICIONALES:
         for (final s in slots)
           _buildPlannedMeal(
             s.key,
-            s.key == 'Snack' ? 'Snack de ${pick(veg, d * 2 + 1, 'fruta y frutos secos')} con proteína'
-                : tpl[s.value],
+            respectTitle(
+              addMustHave(
+                s.key == 'Snack'
+                    ? 'Snack de ${pick(veg, d * 2 + 1, 'fruta y frutos secos')} con proteína'
+                    : tpl[s.value],
+                d,
+              ),
+              s.key,
+              d,
+            ),
             partitions[s.key]!,
           ),
       ];
@@ -609,7 +726,11 @@ REQUISITOS ADICIONALES:
     return PlannedMeal(
       slot: slot,
       title: title.trim(),
-      description: 'Plato balanceado siguiendo las 7 reglas nutricionales de NekoFit',
+      description:
+          'Incluye las porciones de la meta del día: '
+          '${macros['proteins']!.toStringAsFixed(0)} g de proteína, '
+          '${macros['carbs']!.toStringAsFixed(0)} g de carbohidratos y '
+          '${macros['fats']!.toStringAsFixed(0)} g de grasas.',
       calories: macros['calories']!,
       proteins: macros['proteins']!,
       carbs: macros['carbs']!,

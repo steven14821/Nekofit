@@ -142,9 +142,9 @@
   "stepExtremeContinue": "Continuar",
   "stepExtremeSkip": "Saltar",
   "extremeTitle": "Personalización extrema",
-  "extremeBody": "Dale a tu plan un plazo, ritmo y contexto reales: por cuántas semanas, si ayunas, y qué alimentos y condiciones respetar. Nuestro gato IA lo usará cada semana.",
-  "extremeEnableLabel": "Crear plan con plazo",
-  "extremeEnableDesc": "Actívalo para generar un plan de 4, 8 o 12 semanas que evoluciona contigo.",
+  "extremeBody": "Define el plazo, el ritmo de comidas y las condiciones de tu plan. Nuestro gato IA lo usará cada semana para armar tus menús.",
+  "extremeEnableLabel": "Crear plan personalizado",
+  "extremeEnableDesc": "Actívalo para generar un plan de 4, 8 o 12 semanas con tus preferencias y condiciones.",
   "extremePhaseLabel": "Fase del plan",
   "extremePhaseCut": "Perder peso",
   "extremePhaseMaintain": "Mantener peso",
@@ -163,17 +163,17 @@
   "extremeIfDesc": "La primera comida de la mañana queda fuera del plan.",
   "extremeIf16": "16:8",
   "extremeIf18": "18:6",
-  "extremeContextLabel": "Tu contexto (opcional)",
-  "extremeContextHint": "Este contexto viaja a cada plan semanal IA. Escribe separado por comas.",
+  "extremeContextLabel": "Tu contexto, opcional",
+  "extremeContextHint": "Este contexto se aplica a cada plan semanal. Separa los elementos con comas.",
   "extremeMedicalLabel": "Condiciones médicas",
-  "extremeMedicalHint": "P. ej. resistencia a la insulina, hipertensión, hipotiroidismo…",
-  "extremeDietLabel": "Preferencias / restricciones",
-  "extremeDietHint": "P. ej. vegana, keto, sin gluten, sin lactosa…",
+  "extremeMedicalHint": "Ejemplos: resistencia a la insulina, hipertensión, hipotiroidismo",
+  "extremeDietLabel": "Preferencias y restricciones",
+  "extremeDietHint": "Ejemplos: vegana, keto, sin gluten, sin lactosa",
   "extremeMustHaveLabel": "Imprescindibles",
-  "extremeMustHaveHint": "Alimentos que te encantan y NO quieres soltar (se incluyen casi a diario).",
+  "extremeMustHaveHint": "Alimentos que te encantan y no quieres soltar. Se incluyen casi a diario.",
   "extremeAversionsLabel": "Aversiones",
   "extremeAversionsHint": "Alimentos a evitar por completo en el plan.",
-  "extremeNotice": "Tu fase redefine las calorías: con menos plazo el déficit es más agresivo, con más semanas es más suave. Al vencer el plan, NekoFit te sugerirá la siguiente fase antes de tocarte nada.",
+  "extremeNotice": "El plan es un apoyo opcional que organiza tus comidas sobre las calorías de tu objetivo sin cambiarlas. Al vencer, NekoFit te sugerirá la siguiente fase.",
   "planExpiredTitle": "Tu plan terminó",
   "planExpiredSubtitle": "Tu plan nutricional ha llegado a su fin.",
   "@planExpiredBody": {
@@ -182,10 +182,10 @@
       "phase": { "type": "String" }
     }
   },
-  "planExpiredBody": "Tu plan de {weeks} semanas terminó. La siguiente fase sugerida es: {phase}. ¿La aplicamos? Recalcularemos tus macros.",
+"planExpiredBody": "Tu plan de {weeks} semanas ha terminado. La siguiente fase sugerida es {phase}. ¿La aplicamos? Se mantendrán las calorías de tu objetivo.",
   "planApprove": "Aplicar",
-  "planSkip": "Ahora no",
-  "planTransited": "¡Fase aplicada! Nuevos macros calculados y nuevo plan activo.",
+  "planSkip": "No por ahora",
+  "planTransited": "Fase aplicada. Tu nuevo plan ya está activo y mantiene las calorías de tu objetivo.",
   "@planTransitError": {
     "placeholders": {
       "error": { "type": "String" }
@@ -260,8 +260,8 @@
   "homeWeeklyProgress": "Ver progreso semanal",
   "homePlanTitle": "Mi plan nutricional",
   "homePlanEmptyTitle": "Crea tu plan nutricional",
-  "homePlanEditHint": "Toca para editar tu fase, plazo y comidas. También puedes volver al ritmo clásico.",
-  "homePlanEmptyHint": "Personalización extrema: fase, duración y hábitos. Afecta tus macros y tu plan semanal.",
+  "homePlanEditHint": "Toca para ajustar tu fase, duración y comidas. También puedes volver al ritmo clásico sin plan.",
+  "homePlanEmptyHint": "Crea un plan opcional que organiza tus comidas sobre las calorías de tu objetivo sin cambiarlas.",
   "planCardProgress": "{daysLeft} / {totalDays} días",
   "@planCardProgress": {
     "placeholders": {

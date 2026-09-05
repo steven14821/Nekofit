@@ -378,14 +378,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get extremeBody =>
-      'Dale a tu plan un plazo, ritmo y contexto reales: por cuántas semanas, si ayunas, y qué alimentos y condiciones respetar. Nuestro gato IA lo usará cada semana.';
+      'Define el plazo, el ritmo de comidas y las condiciones de tu plan. Nuestro gato IA lo usará cada semana para armar tus menús.';
 
   @override
-  String get extremeEnableLabel => 'Crear plan con plazo';
+  String get extremeEnableLabel => 'Crear plan personalizado';
 
   @override
   String get extremeEnableDesc =>
-      'Actívalo para generar un plan de 4, 8 o 12 semanas que evoluciona contigo.';
+      'Actívalo para generar un plan de 4, 8 o 12 semanas con tus preferencias y condiciones.';
 
   @override
   String get extremePhaseLabel => 'Fase del plan';
@@ -444,31 +444,32 @@ class AppLocalizationsEs extends AppLocalizations {
   String get extremeIf18 => '18:6';
 
   @override
-  String get extremeContextLabel => 'Tu contexto (opcional)';
+  String get extremeContextLabel => 'Tu contexto, opcional';
 
   @override
   String get extremeContextHint =>
-      'Este contexto viaja a cada plan semanal IA. Escribe separado por comas.';
+      'Este contexto se aplica a cada plan semanal. Separa los elementos con comas.';
 
   @override
   String get extremeMedicalLabel => 'Condiciones médicas';
 
   @override
   String get extremeMedicalHint =>
-      'P. ej. resistencia a la insulina, hipertensión, hipotiroidismo…';
+      'Ejemplos: resistencia a la insulina, hipertensión, hipotiroidismo';
 
   @override
-  String get extremeDietLabel => 'Preferencias / restricciones';
+  String get extremeDietLabel => 'Preferencias y restricciones';
 
   @override
-  String get extremeDietHint => 'P. ej. vegana, keto, sin gluten, sin lactosa…';
+  String get extremeDietHint =>
+      'Ejemplos: vegana, keto, sin gluten, sin lactosa';
 
   @override
   String get extremeMustHaveLabel => 'Imprescindibles';
 
   @override
   String get extremeMustHaveHint =>
-      'Alimentos que te encantan y NO quieres soltar (se incluyen casi a diario).';
+      'Alimentos que te encantan y no quieres soltar. Se incluyen casi a diario.';
 
   @override
   String get extremeAversionsLabel => 'Aversiones';
@@ -479,7 +480,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get extremeNotice =>
-      'Tu fase redefine las calorías: con menos plazo el déficit es más agresivo, con más semanas es más suave. Al vencer el plan, NekoFit te sugerirá la siguiente fase antes de tocarte nada.';
+      'El plan es un apoyo opcional que organiza tus comidas sobre las calorías de tu objetivo sin cambiarlas. Al vencer, NekoFit te sugerirá la siguiente fase.';
 
   @override
   String get planExpiredTitle => 'Tu plan terminó';
@@ -489,18 +490,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String planExpiredBody(int weeks, String phase) {
-    return 'Tu plan de $weeks semanas terminó. La siguiente fase sugerida es: $phase. ¿La aplicamos? Recalcularemos tus macros.';
+    return 'Tu plan de $weeks semanas ha terminado. La siguiente fase sugerida es $phase. ¿La aplicamos? Se mantendrán las calorías de tu objetivo.';
   }
 
   @override
   String get planApprove => 'Aplicar';
 
   @override
-  String get planSkip => 'Ahora no';
+  String get planSkip => 'No por ahora';
 
   @override
   String get planTransited =>
-      '¡Fase aplicada! Nuevos macros calculados y nuevo plan activo.';
+      'Fase aplicada. Tu nuevo plan ya está activo y mantiene las calorías de tu objetivo.';
 
   @override
   String planTransitError(String error) {
@@ -695,11 +696,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homePlanEditHint =>
-      'Toca para editar tu fase, plazo y comidas. También puedes volver al ritmo clásico.';
+      'Toca para ajustar tu fase, duración y comidas. También puedes volver al ritmo clásico sin plan.';
 
   @override
   String get homePlanEmptyHint =>
-      'Personalización extrema: fase, duración y hábitos. Afecta tus macros y tu plan semanal.';
+      'Crea un plan opcional que organiza tus comidas sobre las calorías de tu objetivo sin cambiarlas.';
 
   @override
   String planCardProgress(int daysLeft, int totalDays) {

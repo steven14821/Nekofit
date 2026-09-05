@@ -91,6 +91,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   // Si está desactivado, el usuario guarda sin plan (el flujo clásico).
   bool _extremeChatEnabled = false;
   String _extremePhase = 'cut'; // cut | maintenance | lean_gain | recomposition
+  bool _extremePhaseTouched = false;
   int _extremeDurationWeeks = 8; // 4 | 8 | 12
   int _extremeMealsPerDay = 4; // 3 | 4 | 5
   bool _extremeIntermittentFasting = false;
@@ -189,6 +190,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     final macros = CalorieCalculator.distributeMacros(
       targetCalories: targetCalories,
       weightKg: weight,
+      fitnessGoal: _fitnessGoal,
     );
 
     setState(() {
@@ -260,36 +262,12 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       // Mantener activityLevel legacy para no romper lecturas existentes.
       final legacyActivity = _dailyLifestyle == 'activo' ? 'Activo' : 'Sedentario';
 
-      // Si hay plan, la meta calórica la dicta el plan (fase + plazo), no los
-      // valores legacy del onboarding.
-      var calories = _calories;
-      var proteins = _proteins;
-      var carbs = _carbs;
-      var fats = _fats;
-      if (plan != null) {
-        final target = NutritionPlanService.instance.computeTarget(
-          user: UserContext(
-            uid: user.uid,
-            username: username,
-            gender: _gender,
-            age: int.tryParse(_ageController.text) ?? 25,
-            weight: double.tryParse(_weightController.text) ?? 70.0,
-            height: double.tryParse(_heightController.text) ?? 170.0,
-            activityLevel: legacyActivity,
-            fitnessGoal: _fitnessGoal,
-            macroGoals: {'calories': _calories, 'proteins': _proteins, 'carbs': _carbs, 'fats': _fats},
-            dailyLifestyle: _dailyLifestyle,
-            trainingActivity: _trainingActivity,
-            weeklyTrainingMinutes: _weeklyTrainingMinutes.round(),
-            bmrFormula: _bmrFormulaUsed,
-          ),
-          plan: plan,
-        );
-        calories = target.calories;
-        proteins = target.proteins;
-        carbs = target.carbs;
-        fats = target.fats;
-      }
+      // La meta calórica SIEMPRE sale del objetivo (cálculo clásico); el plan
+      // nutricional es opcional y solo estructura las comidas (no toca macros).
+      final calories = _calories;
+      final proteins = _proteins;
+      final carbs = _carbs;
+      final fats = _fats;
 
       final userContext = UserContext(
         uid: user.uid,
@@ -1003,7 +981,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     final nk = context.nk;
     final selected = _extremePhase == value;
     return GestureDetector(
-      onTap: () => setState(() => _extremePhase = value),
+      onTap: () => setState(() {
+        _extremePhase = value;
+        _extremePhaseTouched = true;
+      }),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -2067,6 +2048,15 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 onPageChanged: (index) {
                   setState(() {
                     _currentStep = index;
+                    // Al llegar al paso del plan, alinear la fase por defecto
+                    // con el objetivo elegido si el usuario no la tocó aún.
+                    if (index == 2 && !_extremePhaseTouched) {
+                      _extremePhase = switch (_fitnessGoal) {
+                        'Perder peso' => 'cut',
+                        'Ganar músculo' => 'lean_gain',
+                        _ => 'maintenance',
+                      };
+                    }
                   });
                 },
                 children: [

@@ -10,6 +10,7 @@ import '../core/providers.dart';
 import '../widgets/amber_atmosphere.dart';
 import '../models/user_context.dart';
 import '../l10n/app_localizations.dart';
+import '../services/weekly_plan_service.dart';
 import '../widgets/neko_cat_mascot.dart';
 
 /// Pantalla de edición de perfil existente.
@@ -120,8 +121,12 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     _trainingActivity = data['trainingActivity'] ?? 'pesas_hit';
     _weeklyTrainingMinutes = (data['weeklyTrainingMinutes'] ?? 0).toDouble();
 
-    // Goal
-    _fitnessGoal = data['fitnessGoal'] ?? 'Mantener peso';
+    // Goal. 'Recomposición' era un valor legacy escrito por la antigua lógica
+    // de planes (no es un objetivo fitness válido); se normaliza para que el
+    // selector y el cálculo de macros no se rompan.
+    const knownGoals = ['Perder peso', 'Mantener peso', 'Ganar músculo', 'Otro/Personalizado'];
+    final rawGoal = data['fitnessGoal'] ?? 'Mantener peso';
+    _fitnessGoal = knownGoals.contains(rawGoal) ? rawGoal as String : 'Mantener peso';
     _customGoalController.text = data['customGoalDescription'] ?? '';
 
     // Existing macros
@@ -204,6 +209,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     final macros = CalorieCalculator.distributeMacros(
       targetCalories: targetCalories,
       weightKg: weight,
+      fitnessGoal: _fitnessGoal,
     );
 
     setState(() {
@@ -264,6 +270,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         userContext.toMap(),
         SetOptions(merge: true),
       );
+
+      // El objetivo definió las calorías: el plan semanal debe regenerarse
+      // para reflejar los nuevos valores en vez de servir hasta 5 días viejos.
+      await WeeklyPlanService.instance.clearCache(user.uid);
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
