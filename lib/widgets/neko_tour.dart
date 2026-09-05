@@ -418,9 +418,9 @@ class _NekoTourStepLayerState extends State<_NekoTourStepLayer>
               ElevatedButton(
                 onPressed: widget.onNext,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: nk.amber,
-                  foregroundColor:
-                      isDark ? const Color(0xFF1A1206) : Colors.white,
+                  // Botón neutro (invertido): nada de ámbar en el tour.
+                  backgroundColor: nk.text,
+                  foregroundColor: nk.surface,
                   minimumSize: const Size(0, 36),
                   padding: const EdgeInsets.symmetric(horizontal: 18),
                 ),
@@ -481,14 +481,9 @@ class _SpotlightPainter extends CustomPainter {
       overlay,
     );
 
-    // Borde fino neutro (blanco 20%): delimita el hueco sin acento de color.
-    canvas.drawRRect(
-      spot,
-      Paint()
-        ..color = Colors.white.withValues(alpha: 0.20)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5,
-    );
+    // Sin anillo de color: el hueco del spotlight ya delimita el target
+    // con el contraste de la capa oscura, sin líneas que puedan leerse
+    // como amarillas sobre los elementos ámbar de la app.
   }
 
   @override
