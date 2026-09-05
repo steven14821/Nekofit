@@ -2210,6 +2210,42 @@ abstract class AppLocalizations {
   /// **'RECORDATORIOS DE COMIDA'**
   String get notifMealReminders;
 
+  /// No description provided for @notifPermissionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa las notificaciones'**
+  String get notifPermissionTitle;
+
+  /// No description provided for @notifPermissionBody.
+  ///
+  /// In es, this message translates to:
+  /// **'NekoFit las usa para recordarte registrar tus comidas, avisarte si te faltan calorías del día y cuándo reponer la despensa. Sin el permiso, los recordatorios no se mostrarán.'**
+  String get notifPermissionBody;
+
+  /// No description provided for @notifPermissionRequest.
+  ///
+  /// In es, this message translates to:
+  /// **'Activar'**
+  String get notifPermissionRequest;
+
+  /// No description provided for @notifPermissionOpenSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir ajustes'**
+  String get notifPermissionOpenSettings;
+
+  /// No description provided for @notifPermissionGranted.
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso activado. Ya puedes recibir los recordatorios.'**
+  String get notifPermissionGranted;
+
+  /// No description provided for @notifPermissionStillDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue sin estar activado. Abre los ajustes para permitir las notificaciones.'**
+  String get notifPermissionStillDenied;
+
   /// No description provided for @notifMealTimeHint.
   ///
   /// In es, this message translates to:

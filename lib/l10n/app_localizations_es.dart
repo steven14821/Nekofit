@@ -1199,6 +1199,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifMealReminders => 'RECORDATORIOS DE COMIDA';
 
   @override
+  String get notifPermissionTitle => 'Activa las notificaciones';
+
+  @override
+  String get notifPermissionBody =>
+      'NekoFit las usa para recordarte registrar tus comidas, avisarte si te faltan calorías del día y cuándo reponer la despensa. Sin el permiso, los recordatorios no se mostrarán.';
+
+  @override
+  String get notifPermissionRequest => 'Activar';
+
+  @override
+  String get notifPermissionOpenSettings => 'Abrir ajustes';
+
+  @override
+  String get notifPermissionGranted =>
+      'Permiso activado. Ya puedes recibir los recordatorios.';
+
+  @override
+  String get notifPermissionStillDenied =>
+      'Sigue sin estar activado. Abre los ajustes para permitir las notificaciones.';
+
+  @override
   String get notifMealTimeHint => 'Hora para registrar tu comida del día';
 
   @override

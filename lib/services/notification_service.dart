@@ -1,6 +1,8 @@
+import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -72,8 +74,9 @@ class NotificationService {
     try {
       final info = await FlutterTimezone.getLocalTimezone();
       tz.setLocalLocation(tz.getLocation(info.identifier));
-    } catch (e) {
-      debugPrint('NotificationService: no se pudo resolver timezone: $e');
+      debugPrint('NotificationService: timezone local set to ${info.identifier}');
+    } on Exception catch (e) {
+      debugPrint('NotificationService: no se pudo resolver timezone: $e. Usando UTC.');
     }
 
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -91,6 +94,44 @@ class NotificationService {
     await ios?.requestPermissions(alert: true, badge: true, sound: true);
 
     _initialized = true;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Permiso de notificaciones (runtime)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// ¿Está concedido el permiso de notificaciones a nivel de SO?
+  ///
+  /// Android 13+ comprueba POST_NOTIFICATIONS; iOS pide permiso explícito.
+  /// En Android <13 el permiso se concede en la instalación y en plataformas
+  /// de escritorio no aplica, así que en ambos casos se considera concedido.
+  Future<bool> areNotificationsEnabled() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return true;
+    final status = await Permission.notification.status;
+    return status.isGranted;
+  }
+
+  /// ¿El sistema ya no permite volver a preguntar el permiso?
+  /// (Suele pasar tras tocar dos veces "No permitir" en Android.)
+  Future<bool> isNotificationPermissionPermanentlyDenied() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return false;
+    final status = await Permission.notification.status;
+    return status.isPermanentlyDenied;
+  }
+
+  /// Pide el permiso en runtime (muestra el diálogo del sistema) y devuelve
+  /// si quedó concedido.
+  Future<bool> requestNotificationPermission() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return true;
+    final status = await Permission.notification.request();
+    return status.isGranted;
+  }
+
+  /// Abre los ajustes del sistema para que el usuario active las
+  /// notificaciones a mano (necesario cuando ya no se puede volver a
+  /// preguntar).
+  Future<void> openNotificationSettings() async {
+    await openAppSettings();
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -451,24 +492,34 @@ class NotificationService {
     try {
       local = tz.local;
     } catch (_) {
+      debugPrint('NotificationService: tz.local no disponible, usando UTC.');
       local = tz.UTC;
     }
+    debugPrint('NotificationService: enviando notificación de prueba en ${seconds}s');
 
     final scheduledDate =
         tz.TZDateTime.now(local).add(Duration(seconds: seconds));
+    debugPrint('NotificationService: scheduledDate = $scheduledDate');
 
-    await _scheduleNotification(
-      id: 999,
-      title: '🐾 ¡Mochi dice miau!',
-      body: 'Notificación de prueba ($seconds s). El canal y los permisos funcionan perfecto.',
-      scheduledDate: scheduledDate,
-      channelId: 'nekofit_debug',
-      channelName: 'Notificaciones de Prueba',
-      channelDescription: 'Canal de prueba para verificar notificaciones',
-      importance: Importance.max,
-      priority: Priority.high,
-      matchDateTimeComponents: null,
-    );
+    try {
+      await _scheduleNotification(
+        id: 999,
+        title: '🐾 ¡Mochi dice miau!',
+        body: 'Notificación de prueba ($seconds s). El canal y los permisos funcionan perfecto.',
+        scheduledDate: scheduledDate,
+        channelId: 'nekofit_debug',
+        channelName: 'Notificaciones de Prueba',
+        channelDescription: 'Canal de prueba para verificar notificaciones',
+        importance: Importance.max,
+        priority: Priority.high,
+        matchDateTimeComponents: null,
+      );
+      debugPrint('NotificationService: notificación de prueba programada correctamente.');
+    } catch (e, st) {
+      debugPrint('NotificationService: ERROR programando notificación de prueba: $e');
+      debugPrint('NotificationService: stack: $st');
+      rethrow;
+    }
   }
 
   /// Próxima ocurrencia de [hour]:[minute] en la zona local.
@@ -480,7 +531,8 @@ class NotificationService {
       local = tz.UTC;
     }
     var date = tz.TZDateTime(local, now.year, now.month, now.day, hour, minute);
-    if (date.isBefore(tz.TZDateTime.from(now, local))) {
+    // Compara usando .isBefore con otro TZDateTime en la misma zona.
+    if (date.isBefore(tz.TZDateTime(local, now.year, now.month, now.day, now.hour, now.minute))) {
       date = date.add(const Duration(days: 1));
     }
     return date;
@@ -521,5 +573,6 @@ class NotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: matchDateTimeComponents,
     );
+    debugPrint('NotificationService: zonedSchedule id=$id ok -> $title');
   }
 }

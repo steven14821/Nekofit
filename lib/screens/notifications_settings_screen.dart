@@ -32,6 +32,8 @@ class _NotificationsSettingsScreenState
   bool _saving = false;
   String _appVersion = '1.0.0';
   bool _smartEnabled = true;
+  bool _notificationsGranted = true;
+  bool _permissionRequestable = true;
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _NotificationsSettingsScreenState
     _loadSavedTimes();
     _loadVersion();
     _loadSmartFlag();
+    _loadNotificationPermission();
   }
 
   Future<void> _loadVersion() async {
@@ -80,6 +83,55 @@ class _NotificationsSettingsScreenState
       _mealTimes = times;
       _loading = false;
     });
+  }
+
+  Future<void> _loadNotificationPermission() async {
+    final granted = await _service.areNotificationsEnabled();
+    final permanentlyDenied =
+        await _service.isNotificationPermissionPermanentlyDenied();
+    if (!mounted) return;
+    setState(() {
+      _notificationsGranted = granted;
+      _permissionRequestable = !granted && !permanentlyDenied;
+    });
+  }
+
+  /// Pide el permiso de nuevo; si el sistema ya no permite preguntar, abre
+  /// los ajustes para activarlo a mano.
+  Future<void> _askNotificationPermission() async {
+    Haptics.select();
+    final granted = await _service.requestNotificationPermission();
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    setState(() => _notificationsGranted = granted);
+    if (granted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.notifPermissionGranted),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    final permanentlyDenied =
+        await _service.isNotificationPermissionPermanentlyDenied();
+    if (!mounted) return;
+    if (permanentlyDenied) {
+      await _service.openNotificationSettings();
+    } else {
+      setState(() => _permissionRequestable = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.notifPermissionStillDenied),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> _openNotificationSettings() async {
+    Haptics.select();
+    await _service.openNotificationSettings();
   }
 
   Future<void> _pickTime(String key, int currentHour, int currentMinute) async {
@@ -215,6 +267,10 @@ class _NotificationsSettingsScreenState
                     const SizedBox(height: 16),
                     _buildLanguageSection(),
                     const SizedBox(height: 16),
+                    if (!_notificationsGranted) ...[
+                      _buildPermissionSection(),
+                      const SizedBox(height: 16),
+                    ],
                     _buildNotificationsSection(),
                     const SizedBox(height: 16),
                     _buildSmartNotificationsSection(),
@@ -341,6 +397,97 @@ class _NotificationsSettingsScreenState
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Sección de permiso de notificaciones
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  Widget _buildPermissionSection() {
+    final nk = context.nk;
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: nk.cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: nk.cat.withValues(alpha: 0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: nk.cat.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.notifications_off_outlined,
+                  size: 14,
+                  color: nk.cat,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  l10n.notifPermissionTitle,
+                  style: TextStyle(
+                    fontFamily: AppFonts.sans,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: nk.text,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.notifPermissionBody,
+            style: TextStyle(
+              fontFamily: AppFonts.sans,
+              fontSize: 12,
+              height: 1.4,
+              color: nk.textDim,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: _permissionRequestable
+                  ? _askNotificationPermission
+                  : _openNotificationSettings,
+              icon: Icon(
+                _permissionRequestable
+                    ? Icons.notifications_active_rounded
+                    : Icons.settings_rounded,
+                size: 16,
+              ),
+              label: Text(
+                _permissionRequestable
+                    ? l10n.notifPermissionRequest
+                    : l10n.notifPermissionOpenSettings,
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: nk.cat,
+                foregroundColor: nk.mode == NekoThemeMode.dark
+                    ? const Color(0xFF1A1206)
+                    : Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

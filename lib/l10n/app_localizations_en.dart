@@ -1194,6 +1194,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifMealReminders => 'MEAL REMINDERS';
 
   @override
+  String get notifPermissionTitle => 'Enable notifications';
+
+  @override
+  String get notifPermissionBody =>
+      'NekoFit uses them to remind you to log your meals, let you know when you\'re short on your daily calories and when to restock the pantry. Without the permission, reminders won\'t show up.';
+
+  @override
+  String get notifPermissionRequest => 'Turn on';
+
+  @override
+  String get notifPermissionOpenSettings => 'Open settings';
+
+  @override
+  String get notifPermissionGranted =>
+      'Permission enabled. You can now receive reminders.';
+
+  @override
+  String get notifPermissionStillDenied =>
+      'Still off. Open settings to allow notifications.';
+
+  @override
   String get notifMealTimeHint => 'Time to log your meal of the day';
 
   @override
